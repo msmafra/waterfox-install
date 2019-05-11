@@ -12,6 +12,7 @@ Run
 or
 
 Run
+
     chmod +x ./waterfox-install.sh
 
 then
