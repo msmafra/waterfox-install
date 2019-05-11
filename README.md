@@ -9,12 +9,12 @@ Run
 
     sudo bash ./waterfox-install.sh
 
-    or
+or
 
 Run
     chmod +x ./waterfox-install.sh
 
-    then
+then
 
     sudo ./waterfox-install.sh
 
