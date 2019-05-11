@@ -1,3 +1,3 @@
 - [ ] \(Optional) Improve README.md;
 - [ ] Create function/script to get the correct latest url of Waterfox. Automate it in the script;
-- [ ] \(Otional) Beautify the scripts files;
+- [ ] \(Optional) Beautify the scripts files;
