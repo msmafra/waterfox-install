@@ -2,4 +2,5 @@
 - [X] Create function/script to get the correct latest url of Waterfox. Automate it in the script;
 - [ ] \(Optional) Beautify the scripts files;
 - [ ] Decide what to do with the getWFXVersion and getLocalWFXVersion functions;
+- [ ] pgrep to check if the waterfox process is running
 - [ ] Bash scritp best practices;
