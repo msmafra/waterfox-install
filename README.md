@@ -7,10 +7,10 @@ Tested on [Fedora](https://getfedora.org/), [System76's POP!_OS](https://system7
 
 - The waterfox.desktop file is adapted from [Arch Linux's AUR waterfox-bin.git](https://aur.archlinux.org/cgit/aur.git/plain/waterfox.desktop?h=waterfox-bin).
   - Changes:
-  The only change is made in waterfox.desktop is on line 87. To point to the most beautiful version of the icon:
+  Added to the waterfox.desktop the TryExec(line 85) key with the full path of the application and also altered the Icon key adding the full path for the 256px x 256px png icon. To point to the most beautiful version of the icon:
 
-
-    `Icon=waterfox-icon => Icon=/usr/lib64/waterfox/browser/chrome/icons/default/default256.png`
+    `85: + TryExec=/usr/share/applications/waterfox/waterfox`
+    `88: Icon=waterfox-icon => Icon=/usr/lib64/waterfox/browser/chrome/icons/default/default256.png`
 
 ## Install
 
