@@ -55,6 +55,7 @@ WFXDEST="/usr/lib64/"
 WFXLOGFILE="wget-waterfox.log"
 WFXEXEC="/usr/bin/waterfox"
 WFXDESKTOP="/usr/share/applications/waterfox.desktop"
+WFXBINPATH="/usr/share/applications/waterfox/waterfox"
 TMPDIR="/tmp"
 # Change to /tmp so it will be automatically deleted
 echo -e "Entering /tmp..."
@@ -158,6 +159,7 @@ Comment[vi]=Để duyệt các trang web
 Comment[zh_CN]=浏览互联网
 Comment[zh_TW]=瀏覽網際網路
 Exec=waterfox %u
+TryExec=$WFXBINPATH
 Terminal=false
 Type=Application
 Icon=/usr/lib64/waterfox/browser/chrome/icons/default/default256.png
