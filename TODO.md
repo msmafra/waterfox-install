@@ -1,4 +1,5 @@
 - [ ] \(Optional) Improve README.md;
 - [X] Create function/script to get the correct latest url of Waterfox. Automate it in the script;
 - [ ] \(Optional) Beautify the scripts files;
-- [ ] Decide what to do with the getWFXVersion and getLocalWFXVersion functions
+- [ ] Decide what to do with the getWFXVersion and getLocalWFXVersion functions;
+- [ ] Bash scritp best practices;
