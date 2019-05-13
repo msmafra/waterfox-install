@@ -10,7 +10,7 @@ Tested on [Fedora](https://getfedora.org/), [System76's POP!_OS](https://system7
   Added to the waterfox.desktop the TryExec(line 85) key with the full path of the application and also altered the Icon key adding the full path for the 256px x 256px png icon. To point to the most beautiful version of the icon:
 
     `85: + TryExec=/usr/share/applications/waterfox/waterfox`
-    
+
     `88: Icon=waterfox-icon => Icon=/usr/lib64/waterfox/browser/chrome/icons/default/default256.png`
 
 ## Install
@@ -33,4 +33,5 @@ then
 
 ## Newer versions fo Waterfox
 
-As there is no generic file like waterfox-latest.tar.bz2, each new version has to be changed manually inside de script until I find and elegant sollution. :wink:
+~~As there is no generic file like waterfox-latest.tar.bz2, each new version has to be changed manually inside de script until I find and elegant sollution. :wink:~~
+Function that sweeps the download page and get the correct url created: getWFXURL 
