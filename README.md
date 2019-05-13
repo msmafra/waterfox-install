@@ -31,7 +31,7 @@ then
     sudo ./waterfox-install.sh
 
 
-## Newer versions fo Waterfox
+## Newer versions of Waterfox
 
 ~~As there is no generic file like waterfox-latest.tar.bz2, each new version has to be changed manually inside de script until I find and elegant sollution. :wink:~~
-Function that sweeps the download page and gets the correct url created: getWFXURL 
+Function that sweeps the download page and gets the correct url created: getWFXURL
