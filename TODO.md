@@ -3,4 +3,5 @@
 - [ ] \(Optional) Beautify the scripts files;
 - [ ] Decide what to do with the getWFXVersion and getLocalWFXVersion functions;
 - [ ] pgrep to check if the waterfox process is running
-- [ ] Bash scritp best practices;
+- [ ] Bash script best practices;
+- [ ] Fedora SilverBlue user install (non system wide)
