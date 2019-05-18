@@ -6,12 +6,21 @@
 # create a symbolic link in /usr/bin pointing to /usr/lib64/waterfox/waterfox
 
 # The url from the download page
-WFXPAGE="https://waterfoxproject.org/en-US/waterfox/new/?scene=1"
+#WFXPAGE="https://waterfoxproject.org/en-US/waterfox/new/?scene=1"
+WFXPAGE="https://www.waterfox.net/releases/"
 
 function getAvailableWFXVersion(){
-  # Get Waterfox most recent version
-  WFXVER="$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s", $1,$2,$3}')"
+  # Get Waterfox most recent version NO ALPHA
+  #WFXVER="$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s", $1,$2,$3}')"
+  WFXVER="$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep -m 1 ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s\n", $1,$2,$3}')"
   echo $WFXVER
+}
+
+
+function getLocalWFXVersion() {
+	# Get Waterfox installed version
+	WFXLVER=$(waterfox --version | awk -F'[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | awk -F"." '{printf "Installed Waterfox version %s.%s.%s", $1,$2,$3}' | tr " " "\n" )
+	echo $WFXLVER
 }
 
 function getWFXURL() {
@@ -19,19 +28,13 @@ function getWFXURL() {
   # Reduces it to one also
   # For some reason it returns the same url 10 times because it is repeated 10 times inside the page html source. (Why?)
   # uniq -u alone did not get one line and I am lazy and sort solved the problem for me
-  WFXURL=$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep ".bz2")
+  WFXURL=$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep -m 1 ".bz2")
 }
 
 function getTheDrownedFox() {
   # Start the download
   echo -e "Downloading...\n"
   wget -t 5 -T 10 -w 5 --waitretry=15 -c $WFXURL
-}
-
-function getLocalWFXVersion() {
-	# Get Waterfox installed version
-	WFXLVER=$(waterfox --version | awk -F'[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | awk -F"." '{printf "Installed Waterfox version %s.%s.%s", $1,$2,$3}')
-	echo $WFXLVER
 }
 
 function waitKeyPress(){
@@ -48,6 +51,7 @@ function waitKeyPress(){
 getLocalWFXVersion
 getAvailableWFXVersion
 getWFXURL
+
 # As there is not yeat a waterfox-latest.tar.bz2 the url has to be hard coded. Paste it here for each new version
 #WFXURL="https://storage-waterfox.netdna-ssl.com/releases/linux64/installer/waterfox-56.2.8.en-US.linux-x86_64.tar.bz2"
 WFXFILE="$(echo "$WFXURL" | awk  -F "/" '{print $7}' | tr -d "\n")"
@@ -68,7 +72,7 @@ function extractIt() {
 	echo $WFXFILE
 	tar -xvf $WFXFILE -C $WFXDEST
 }
-extractIt
+#
 
 function createDesktopFile() {
 if [ ! -f "$WFXDESKTOP" ]; then
