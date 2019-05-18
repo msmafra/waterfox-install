@@ -34,3 +34,4 @@ then
 ## Newer versions of Waterfox
 
 The script is pointing to the old... previous download page https://waterfoxproject.org/en-US/waterfox/new/?scene=1, which is not updated so it only downloads version 56.2.8. The new download page https://www.waterfox.net/releases/ has now all OSes and also the possiblity to download the testing/production versions.
+And I also don't know which site to point to. ;)
