@@ -33,5 +33,4 @@ then
 
 ## Newer versions of Waterfox
 
-~~As there is no generic file like waterfox-latest.tar.bz2, each new version has to be changed manually inside de script until I find and elegant sollution. :wink:~~
-Function that sweeps the download page and gets the correct url created: getWFXURL
+The script is pointing to the old... previous download page https://waterfoxproject.org/en-US/waterfox/new/?scene=1, which is not updated so it only downloads version 56.2.8. The new download page https://www.waterfox.net/releases/ has now all OSes and also the possiblity to download the testing/production versions.
