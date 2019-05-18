@@ -33,8 +33,15 @@ function getWFXURL() {
 
 function getTheDrownedFox() {
   # Start the download
-  echo -e "Downloading...\n"
-  wget -t 5 -T 10 -w 5 --waitretry=15 -c $WFXURL
+
+  DW=$(wget -t 5 -T 10 -w 5 --waitretry=15 -c $WFXURL 2>&1 | grep -io "ERRO 404")
+  if [[ "${DW}" = "ERRO 404" ]];then
+    echo -e "Erro 404! Leaving...\n"
+    exit 1
+  else
+    echo -e "Downloading...\n"
+    $DW
+  fi
 }
 
 function waitKeyPress(){
@@ -72,7 +79,7 @@ function extractIt() {
 	echo $WFXFILE
 	tar -xvf $WFXFILE -C $WFXDEST
 }
-#
+extractIt
 
 function createDesktopFile() {
 if [ ! -f "$WFXDESKTOP" ]; then
