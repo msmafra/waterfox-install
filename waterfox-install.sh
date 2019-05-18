@@ -44,7 +44,7 @@ function getTheDrownedFox() {
   fi
 }
 
-function waitKeyPress(){
+function waitKeyPress() {
 	# Used when testing code
 	echo "Press any key to continue"
 	  while [ true ] ; do
