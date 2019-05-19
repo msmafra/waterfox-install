@@ -1,5 +1,2 @@
-tests.sh
-main.sh
-example.sh
-bash_boiler_plate.sh
 old.*
+tests/*
