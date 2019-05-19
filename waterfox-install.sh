@@ -1,19 +1,22 @@
 #!/bin/bash
 # Waterfox Installation Script
-# Version 0.5
-# downloads it to /tmp
-# extract it to /usr/lib64/
-# create the .desktop file in /usr/share/applications/
-# create a symbolic link in /usr/bin pointing to /usr/lib64/waterfox/waterfox
+# Version 0.6
+# Downloads it to /tmp
+# Extracts it to /usr/lib64/
+# Creates the .desktop file in /usr/share/applications/
+# Creates a symbolic link in /usr/bin pointing to /usr/lib64/waterfox/waterfox
 
 # The url from the download page
 #WFXPAGE="https://waterfoxproject.org/en-US/waterfox/new/?scene=1"
 WFXPAGE="https://www.waterfox.net/releases/"
 
 function getAvailableWFXVersion(){
-  # Get Waterfox most recent version NO ALPHA
+  # Gets Waterfox most recent version NO ALPHA. Old method with waterfox project url
   #WFXVER="$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s", $1,$2,$3}')"
+  # Gets the production version of Waterfox from waterfox.net. Comment this to be able to download the testing verions
   WFXVER="$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep -m 1 ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s\n", $1,$2,$3}')"
+  # Gets the development version of Waterfox from waterfox.net. Uncomment this if want the testing version
+  #WFXVER="$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort -r | uniq | grep -m 1 ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s\n", $1,$2,$3}')"
   echo $WFXVER
 }
 
