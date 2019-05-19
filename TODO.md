@@ -7,6 +7,6 @@
 - [ ] \(Optional) Fedora SilverBlue user install (non system wide);
 - [ ] Uninstall method;
 - [ ] Chosing between testing and production (different dir for testing??);
-- [ ] Chose which dir: /opt, /usr/lib64 or ${HOME}/waterfox;
+- [ ] Choice of dir: /opt, /usr/lib64 or ${HOME}/waterfox;
 - [ ] Cleaning up after Installation;
-- [ ] choice to keep the download file. Copying it from /tmp to ~/Downloads;
+- [ ] Choice to keep the download file. Copying it from /tmp to ~/Downloads;
