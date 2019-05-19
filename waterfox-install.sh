@@ -1,5 +1,6 @@
 #!/bin/bash
 # Waterfox Installation Script
+# Version 0.5
 # downloads it to /tmp
 # extract it to /usr/lib64/
 # create the .desktop file in /usr/share/applications/
@@ -42,17 +43,6 @@ function getTheDrownedFox() {
     echo -e "Downloading...\n"
     $DW
   fi
-}
-
-function waitKeyPress() {
-	# Used when testing code
-	echo "Press any key to continue"
-	  while [ true ] ; do
-	      read -t 3 -n 1
-	    if [ $? = 0 ] ; then
-	      exit ;
-	    fi
-	  done
 }
 
 getLocalWFXVersion
