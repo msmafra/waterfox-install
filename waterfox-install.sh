@@ -37,8 +37,10 @@ function getWFXURL() {
 
 function getTheDrownedFox() {
   # Start the download
+  #FAKE="https://storage-waterfox.netdna-ssl.com/releases/linux64/installer/waterfox-56.10.10.en-US.linux-x86_64.tar.bz2"
+  #DW=$(wget -nv --progress=dot --show-progress -t 5 -T 10 -w 5 --waitretry=15 -c $FAKE 2>&1 | grep -io "ERRO 404")
+  DW=$(wget -nv --progress=dot --show-progress -t 5 -T 10 -w 5 --waitretry=15 -c $WFXURL 2>&1 | grep -io "ERRO 404")
 
-  DW=$(wget -t 5 -T 10 -w 5 --waitretry=15 -c $WFXURL 2>&1 | grep -io "ERRO 404")
   if [[ "${DW}" = "ERRO 404" ]];then
     echo -e "Erro 404! Leaving...\n"
     exit 1
@@ -67,6 +69,7 @@ cd "$TMPDIR" && pwd
 
 getTheDrownedFox
 
+exit 0
 function extractIt() {
 	echo -e "Extracting ...\n"
 	echo $WFXFILE
