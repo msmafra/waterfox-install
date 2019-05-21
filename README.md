@@ -38,3 +38,21 @@ then
 
 The script is pointing to the old... previous download page https://waterfoxproject.org/en-US/waterfox/new/?scene=1, which is not updated so it only downloads version 56.2.8 (at the writing of this 20190519). The "new" download page https://www.waterfox.net/releases/ has now all OSes and also the possiblity to download the testing and production versions. The ability to chose which one is not implement in the current version 0.5
 And I also don't know which site to point to. ;)
+
+## Uninstall
+
+Created separated uninstallation file for the original (current) installation because of its place of installation /usr/lib64. It will probably change on the next version.
+
+Run
+
+    sudo bash ./uninstall-waterfox.sh
+
+or
+
+Run
+
+    chmod +x ./uninstall-waterfox.sh
+
+then
+
+    sudo ./uninstall-waterfox.sh
