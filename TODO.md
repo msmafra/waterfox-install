@@ -6,7 +6,8 @@
 - [ ] Bash script best practices;
 - [ ] \(Optional) Fedora SilverBlue user install (non system wide);
 - [ ] Uninstall method;
-- [ ] Chosing between testing and production (different dir for testing??);
+- [ ] Chosing between testing (alpha/beta/rc) and production (different dir for testing??);
 - [ ] Choice of dir: /opt, /usr/lib64 or ${HOME}/waterfox;
 - [ ] Cleaning up after Installation;
-- [ ] Choice to keep the download file. Copying it from /tmp to ~/Downloads;
+- [ ] Givve choice to keep the download file. Copying it from /tmp to ~/Downloads;
+- [ ] Choose between curl or wget or just change everything to wget
