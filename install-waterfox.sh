@@ -5,80 +5,69 @@
 # Extracts it to /usr/lib64/
 # Creates the .desktop file in /usr/share/applications/
 # Creates a symbolic link in /usr/bin pointing to /usr/lib64/waterfox/waterfox
-
+#
 # The url from the download page
-#WFXPAGE="https://waterfoxproject.org/en-US/waterfox/new/?scene=1"
 WFXPAGE="https://www.waterfox.net/releases/"
-
-function getAvailableWFXVersion(){
-  # Gets Waterfox most recent version NO ALPHA. Old method with waterfox project url
-  #WFXVER="$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s", $1,$2,$3}')"
-  # Gets the production version of Waterfox from waterfox.net. Comment this to be able to download the testing verions
-  WFXVER="$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep -m 1 ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s\n", $1,$2,$3}')"
-  # Gets the development version of Waterfox from waterfox.net. Uncomment this if want the testing version
-  #WFXVER="$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort -r | uniq | grep -m 1 ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s\n", $1,$2,$3}')"
-  echo $WFXVER
-}
-
-
-function getLocalWFXVersion() {
-	# Get Waterfox installed version
-	WFXLVER=$(waterfox --version | awk -F'[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | awk -F"." '{printf "Installed Waterfox version %s.%s.%s", $1,$2,$3}' | tr " " "\n" )
-	echo $WFXLVER
-}
-
-function getWFXURL() {
-  # Searches the WFXPAGE source and get the url for most recent version for Linux
-  # Reduces it to one also
-  # For some reason it returns the same url 10 times because it is repeated 10 times inside the page html source. (Why?)
-  # uniq -u alone did not get one line and I am lazy and sort solved the problem for me
-  WFXURL=$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep -m 1 ".bz2")
-}
-
-function getTheDrownedFox() {
-  # Start the download
-  #FAKE="https://storage-waterfox.netdna-ssl.com/releases/linux64/installer/waterfox-56.10.10.en-US.linux-x86_64.tar.bz2"
-  #DW=$(wget -nv --progress=dot --show-progress -t 5 -T 10 -w 5 --waitretry=15 -c $FAKE 2>&1 | grep -io "ERRO 404")
-  DW=$(wget -nv --progress=dot --show-progress -t 5 -T 10 -w 5 --waitretry=15 -c $WFXURL 2>&1 | grep -io "ERRO 404")
-
-  if [[ "${DW}" = "ERRO 404" ]];then
-    echo -e "Erro 404! Leaving...\n"
-    exit 1
-  else
-    echo -e "Downloading...\n"
-    $DW
-  fi
-}
-
-getLocalWFXVersion
-getAvailableWFXVersion
-getWFXURL
-
 # As there is not yeat a waterfox-latest.tar.bz2 the url has to be hard coded. Paste it here for each new version
-#WFXURL="https://storage-waterfox.netdna-ssl.com/releases/linux64/installer/waterfox-56.2.8.en-US.linux-x86_64.tar.bz2"
+WFXURL=$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep -m 1 ".bz2")
 WFXFILE="$(echo "$WFXURL" | awk  -F "/" '{print $7}' | tr -d "\n")"
 WFXDEST="/usr/lib64/"
 WFXEXEC="/usr/bin/waterfox"
 WFXDESKTOP="/usr/share/applications/waterfox.desktop"
-WFXBINPATH="/usr/share/applications/waterfox/waterfox"
+WFXBINPATH="/usr/lib64/waterfox/waterfox"
 TMPDIR="/tmp"
-# Change to /tmp so it will be automatically deleted
-echo -e "Entering /tmp..."
-cd "$TMPDIR" && pwd
 
-getTheDrownedFox
+function getAvailableWFXVersion() {
 
-exit 0
+  # Gets the production version of Waterfox from waterfox.net. Comment this to be able to download the testing verions
+  WFXVER="$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep -m 1 ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s\n", $1,$2,$3}')"
+  echo $WFXVER
+
+}
+
+function getLocalWFXVersion() {
+
+    WFXWHERE=$( \whereis -b firefox | awk '$2 != "" {print true}' | tr -d "\n" )
+
+    if [[ -n $WFXWHERE  ]];then
+        WFXLVER=$(waterfox --version | awk -F'[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | awk -F"." '{printf "%s.%s.%s", $1,$2,$3}' | tr " " "\n" )
+        echo $WFXLVER
+        sleep 3s
+    else
+        echo -e "\nNo installed version found\n"
+        sleep 1s
+    fi
+
+}
+
+
+function getTheDrownedFox() {
+
+  # Check if file exists
+  WFXFCHECK=$(\wget --spider --show-progress -qS $WFXURL 2>&1 | head -n 1 | awk 'NR==1{print $2}')
+  # If file is not there exits
+  if [[ ! "${WFXFCHECK}" = "200" ]];then
+    echo -e "\nNo file found! or another error Leaving...\n"
+    exit 1
+  else
+    # If the file is there starts the download
+    echo -e "\nStarting the download...\n"
+  \wget --show-progress -t 5 -T 10 -w 5 --waitretry=15 -c $WFXURL
+
+  fi
+
+}
+
 function extractIt() {
-	echo -e "Extracting ...\n"
+	echo -e "\nExtracting ...\n"
 	echo $WFXFILE
 	tar -xvf $WFXFILE -C $WFXDEST
 }
-extractIt
 
 function createDesktopFile() {
+# If there is not already a file there, create one
 if [ ! -f "$WFXDESKTOP" ]; then
-echo -e "Creating the waterfox.desktop file...\n"
+echo -e "\nCreating the waterfox.desktop file...\n"
 # waterfox.desktop is taken from AUR : waterfox-bin.git https://aur.archlinux.org/cgit/aur.git/plain/waterfox.desktop?h=waterfox-bin
 tee -i $WFXDESKTOP <<WFOX
 [Desktop Entry]
@@ -438,16 +427,26 @@ WFOX
 else
 	echo -e "waterfox.desktop already exists!"
 fi
+
 }
-createDesktopFile
 
 function symbolicWFX() {
+
 if [ ! -f "$WFXEXEC" ]; then
-  echo -e "Creating the symbolic link...\n"
-  #ln -siv /usr/lib64/waterfox/waterfox /usr/bin/waterfox
+  echo -e "\nCreating the symbolic link...\n"
 	ln -sv /usr/lib64/waterfox/waterfox /usr/bin/waterfox
 else
-  echo -e "Executable file is already there!"
+  echo -e "\nExecutable file is already there!\n"
 fi
+
 }
+# Change to /tmp so it will be automatically deleted after restart or shutdown
+echo -e "\nEntering /tmp...\n"
+cd "$TMPDIR" && pwd
+
+getLocalWFXVersion
+getAvailableWFXVersion
+getTheDrownedFox
+extractIt
+createDesktopFile
 symbolicWFX
