@@ -9,7 +9,7 @@ Tested on [Fedora](https://getfedora.org/), [POP!_OS](https://system76.com/pop) 
   - Changes:
   Added to the waterfox.desktop the TryExec(line 85) key with the full path of the application and also altered the Icon key adding the full path for the 256px x 256px png icon. To point to the most beautiful version of the icon:
 
-    `85: + TryExec=/usr/share/applications/waterfox/waterfox`
+    `85: + TryExec=/usr/lib64/waterfox/waterfox`
 
     `88: Icon=waterfox-icon => Icon=/usr/lib64/waterfox/browser/chrome/icons/default/default256.png`
 
