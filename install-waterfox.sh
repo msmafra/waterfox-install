@@ -1,14 +1,10 @@
 #!/bin/bash
-# Waterfox Installation Script
-# Version 0.6
-# Downloads it to /tmp
-# Extracts it to /usr/lib64/
-# Creates the .desktop file in /usr/share/applications/
-# Creates a symbolic link in /usr/bin pointing to /usr/lib64/waterfox/waterfox
+# Waterfox Installation Script (just install. Sorry!)
+# Version 0.7.1
+# Downloads it to /tmp, extracts it to /usr/lib64/, creates waterfox.desktop file in /usr/share/applications/ a symbolic link in /usr/bin pointing to /usr/lib64/waterfox/waterfox
 #
 # The url from the download page
 WFXPAGE="https://www.waterfox.net/releases/"
-# As there is not yeat a waterfox-latest.tar.bz2 the url has to be hard coded. Paste it here for each new version
 WFXURL=$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep -m 1 ".bz2")
 WFXFILE="$(echo "$WFXURL" | awk  -F "/" '{print $7}' | tr -d "\n")"
 WFXDEST="/usr/lib64/"
@@ -20,17 +16,17 @@ TMPDIR="/tmp"
 function getAvailableWFXVersion() {
 
   # Gets the production version of Waterfox from waterfox.net. Comment this to be able to download the testing verions
-  WFXVER="$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep -m 1 ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s\n", $1,$2,$3}')"
+  WFXVER="$(\wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep -m 1 ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s\n", $1,$2,$3}')"
   echo $WFXVER
 
 }
 
 function getLocalWFXVersion() {
 
-    WFXWHERE=$( \whereis -b firefox | awk '$2 != "" {print true}' | tr -d "\n" )
+    WFXWHERE=$( \whereis -b waterfox | awk '$2 != "" {print true}' | tr -d "\n" )
 
     if [[ -n $WFXWHERE  ]];then
-        WFXLVER=$(waterfox --version | awk -F'[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | awk -F"." '{printf "%s.%s.%s", $1,$2,$3}' | tr " " "\n" )
+        WFXLVER=$(\waterfox --version | awk -F'[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | awk -F"." '{printf "%s.%s.%s", $1,$2,$3}' | tr " " "\n" )
         echo $WFXLVER
         sleep 3s
     else
@@ -59,12 +55,15 @@ function getTheDrownedFox() {
 }
 
 function extractIt() {
+
 	echo -e "\nExtracting ...\n"
 	echo $WFXFILE
 	tar -xvf $WFXFILE -C $WFXDEST
+
 }
 
 function createDesktopFile() {
+  
 # If there is not already a file there, create one
 if [ ! -f "$WFXDESKTOP" ]; then
 echo -e "\nCreating the waterfox.desktop file...\n"
@@ -425,7 +424,7 @@ Name[zh_TW]=新增隱私視窗
 Exec=waterfox -private-window
 WFOX
 else
-	echo -e "waterfox.desktop already exists!"
+	echo -e "\n The waterfox.desktop file already exists!"
 fi
 
 }
@@ -440,7 +439,8 @@ else
 fi
 
 }
-# Change to /tmp so it will be automatically deleted after restart or shutdown
+
+# Change to /tmp so the downloaded file will be automatically deleted after restart or shutdown
 echo -e "\nEntering /tmp...\n"
 cd "$TMPDIR" && pwd
 
