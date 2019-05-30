@@ -1,0 +1,262 @@
+#!/usr/bin/bash
+#
+# This file is an quick adaptation of the Fedora's version of /usr/bin/firefox file created by DNF
+# package manager during the installation process
+#
+#
+# The contents of this file are subject to the Netscape Public
+# License Version 1.1 (the "License"); you may not use this file
+# except in compliance with the License. You may obtain a copy of
+# the License at http://www.mozilla.org/NPL/
+#
+# Software distributed under the License is distributed on an "AS
+# IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+# implied. See the License for the specific language governing
+# rights and limitations under the License.
+#
+# The Original Code is mozilla.org code.
+#
+# The Initial Developer of the Original Code is Netscape
+# Communications Corporation.  Portions created by Netscape are
+# Copyright (C) 1998 Netscape Communications Corporation. All
+# Rights Reserved.
+#
+# Contributor(s):
+#
+
+##
+## Usage:
+##
+## $ waterfox
+##
+## This script is meant to run a mozilla program from the mozilla
+## rpm installation.
+##
+## The script will setup all the environment voodoo needed to make
+## mozilla work.
+
+cmdname=`basename $0`
+
+##
+## Variables
+##
+WFX_ARCH=$(uname -m)
+case $WFX_ARCH in
+	x86_64 | s390x | sparc64)
+		WFX_LIB_DIR="/usr/lib64"
+		SECONDARY_LIB_DIR="/usr/lib"
+		;;
+	* )
+		WFX_LIB_DIR="/usr/lib"
+		SECONDARY_LIB_DIR="/usr/lib64"
+		;;
+esac
+
+WFX_WATERFOX_FILE="waterfox"
+
+if [ ! -r $WFX_LIB_DIR/waterfox/$WFX_WATERFOX_FILE ]; then
+    if [ ! -r $SECONDARY_LIB_DIR/waterfox/$WFX_WATERFOX_FILE ]; then
+	echo "Error: $WFX_LIB_DIR/waterfox/$WFX_WATERFOX_FILE not found"
+	if [ -d $SECONDARY_LIB_DIR ]; then
+	    echo "       $SECONDARY_LIB_DIR/waterfox/$WFX_WATERFOX_FILE not found"
+	fi
+	exit 1
+    fi
+    WFX_LIB_DIR="$SECONDARY_LIB_DIR"
+fi
+WFX_DIST_BIN="$WFX_LIB_DIR/waterfox"
+WFX_LANGPACKS_DIR="$WFX_DIST_BIN/langpacks"
+WFX_EXTENSIONS_PROFILE_DIR="$HOME/.waterfox/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+WFX_PROGRAM="$WFX_DIST_BIN/$WFX_WATERFOX_FILE"
+WFX_LAUNCHER="$WFX_DIST_BIN/run-mozilla.sh"
+
+##
+## Enable Wayland backend?
+##
+if false && ! [ $WFX_DISABLE_WAYLAND ]; then
+  if [ "$XDG_CURRENT_DESKTOP" == "GNOME" ]; then
+    export WFX_ENABLE_WAYLAND=1
+  fi
+fi
+
+##
+## Set WFX_GRE_CONF
+##
+WFX_GRE_CONF=/etc/gre.d/gre.conf
+if [ "$WFX_LIB_DIR" == "/usr/lib64" ]; then
+  WFX_GRE_CONF=/etc/gre.d/gre64.conf
+fi
+export WFX_GRE_CONF
+
+##
+## Set WFX_HOME
+##
+WFX_HOME="$WFX_DIST_BIN"
+
+export WFX_HOME
+
+##
+## Make sure that we set the plugin path
+##
+WFX_PLUGIN_DIR="plugins"
+
+if [ "$WFX_PLUGIN_PATH" ]
+then
+  WFX_PLUGIN_PATH=$WFX_PLUGIN_PATH:$WFX_LIB_DIR/mozilla/$WFX_PLUGIN_DIR:$WFX_DIST_BIN/$WFX_PLUGIN_DIR
+else
+  WFX_PLUGIN_PATH=$WFX_LIB_DIR/mozilla/$WFX_PLUGIN_DIR:$WFX_DIST_BIN/$WFX_PLUGIN_DIR
+fi
+export WFX_PLUGIN_PATH
+
+##
+## Set WFX_APP_LAUNCHER for gnome-session
+##
+export WFX_APP_LAUNCHER="/usr/bin/waterfox"
+
+##
+## Set FONTCONFIG_PATH for Xft/fontconfig
+##
+FONTCONFIG_PATH="/etc/fonts:${WFX_HOME}/res/Xft"
+export FONTCONFIG_PATH
+
+##
+## In order to better support certain scripts (such as Indic and some CJK
+## scripts), Fedora builds its Firefox, with permission from the Mozilla
+## Corporation, with the Pango system as its text renderer.  This change
+## may negatively impact performance on some pages.  To disable the use of
+## Pango, set WFX_DISABLE_PANGO=1 in your environment before launching
+## Firefox.
+##
+#
+# WFX_DISABLE_PANGO=1
+# export WFX_DISABLE_PANGO
+#
+
+##
+## Disable the GNOME crash dialog, Moz has it's own
+##
+GNOME_DISABLE_CRASH_DIALOG=1
+export GNOME_DISABLE_CRASH_DIALOG
+
+##
+## Disable the SLICE allocator (rhbz#1014858)
+##
+export G_SLICE=always-malloc
+
+##
+## Enable Xinput2 (mozbz#1207973)
+##
+export WFX_USE_XINPUT2=1
+
+# OK, here's where all the real work gets done
+
+
+##
+## To disable the use of Waterox localization, set WFX_DISABLE_LANGPACKS=1
+## in your environment before launching Waterfox.
+##
+#
+# WFX_DISABLE_LANGPACKS=1
+# export WFX_DISABLE_LANGPACKS
+#
+
+##
+## Automatically installed langpacks are tracked by .fedora-langpack-install
+## config file.
+##
+FEDORA_LANGPACK_CONFIG="$WFX_EXTENSIONS_PROFILE_DIR/.fedora-langpack-install"
+
+# WFX_DISABLE_LANGPACKS disables language packs completely
+WATERFOX_DOWN=0
+if ! [ $WFX_DISABLE_LANGPACKS ] || [ $WFX_DISABLE_LANGPACKS -eq 0 ]; then
+    if [ -x $WFX_DIST_BIN/$WFX_WATERFOX_FILE ]; then
+        # Is waterfox running?
+        /usr/bin/pidof waterfox > /dev/null 2>&1
+        WATERFOX_DOWN=$?
+    fi
+fi
+
+# Modify language pack configuration only when waterfox is not running
+# and language packs are not disabled
+if [ $WATERFOX_DOWN -ne 0 ]; then
+
+    # Clear already installed langpacks
+    mkdir -p $WFX_EXTENSIONS_PROFILE_DIR
+    if [ -f $FEDORA_LANGPACK_CONFIG ]; then
+        rm `cat $FEDORA_LANGPACK_CONFIG` > /dev/null 2>&1
+        rm $FEDORA_LANGPACK_CONFIG > /dev/null 2>&1
+        # remove all empty langpacks dirs while they block installation of langpacks
+        rmdir $WFX_EXTENSIONS_PROFILE_DIR/langpack* > /dev/null 2>&1
+    fi
+
+    # Get locale from system
+    CURRENT_LOCALE=$LC_ALL
+    CURRENT_LOCALE=${CURRENT_LOCALE:-$LC_MESSAGES}
+    CURRENT_LOCALE=${CURRENT_LOCALE:-$LANG}
+
+    # Try with a local variant first, then without a local variant
+    SHORTMOZLOCALE=`echo $CURRENT_LOCALE | sed "s|_\([^.]*\).*||g" | sed "s|\..*||g"`
+    MOZLOCALE=`echo $CURRENT_LOCALE | sed "s|_\([^.]*\).*|-\1|g" | sed "s|\..*||g"`
+
+    function create_langpack_link() {
+        local language=$*
+        local langpack=langpack-${language}@waterfox.waterfox.org.xpi
+        if [ -f $WFX_LANGPACKS_DIR/$langpack ]; then
+            rm -rf $WFX_EXTENSIONS_PROFILE_DIR/$langpack
+            # If the target file is a symlink (the fallback langpack),
+            # install the original file instead of the fallback one
+            if [ -h $WFX_LANGPACKS_DIR/$langpack ]; then
+                langpack=`readlink $WFX_LANGPACKS_DIR/$langpack`
+            fi
+            ln -s $WFX_LANGPACKS_DIR/$langpack \
+                  $WFX_EXTENSIONS_PROFILE_DIR/$langpack
+            echo $WFX_EXTENSIONS_PROFILE_DIR/$langpack > $FEDORA_LANGPACK_CONFIG
+            return 0
+        fi
+        return 1
+    }
+
+    create_langpack_link $MOZLOCALE || create_langpack_link $SHORTMOZLOCALE || true
+fi
+
+# BEAST fix (rhbz#1005611)
+NSS_SSL_CBC_RANDOM_IV=${NSS_SSL_CBC_RANDOM_IV-1}
+export NSS_SSL_CBC_RANDOM_IV
+
+# Prepare command line arguments
+script_args=""
+pass_arg_count=0
+while [ $# -gt $pass_arg_count ]
+do
+  case "$1" in
+    -g | --debug)
+      script_args="$script_args -g"
+      debugging=1
+      shift
+      ;;
+    -d | --debugger)
+      if [ $# -gt 1 ]; then
+        script_args="$script_args -d $2"
+        shift 2
+      else
+        shift
+      fi
+      ;;
+    *)
+      # Move the unrecognized argument to the end of the list.
+      arg="$1"
+      shift
+      set -- "$@" "$arg"
+      pass_arg_count=`expr $pass_arg_count + 1`
+      ;;
+  esac
+done
+
+# Run the browser
+debugging=0
+if [ $debugging = 1 ]
+then
+  echo $WFX_LAUNCHER $script_args $WFX_PROGRAM "$@"
+fi
+
+exec $WFX_LAUNCHER $script_args $WFX_PROGRAM "$@"
