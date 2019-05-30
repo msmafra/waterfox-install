@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 #
-# This file is an quick adaptation of the Fedora's version of /usr/bin/firefox file created by DNF
-# package manager during the installation process
-#
+# Edited by me, https://github.com/msmafra, using Fedora's version of /usr/bin/firefox
+# as a base, to do a quick adaptation. File is created by DNF package manager during
+# the installation of Mozilla Firefox browser
 #
 # The contents of this file are subject to the Netscape Public
 # License Version 1.1 (the "License"); you may not use this file
@@ -23,7 +23,6 @@
 #
 # Contributor(s):
 #
-
 ##
 ## Usage:
 ##
