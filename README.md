@@ -1,6 +1,6 @@
 # Waterfox Install
 Waterfox download and installation script.
-Tested on [Fedora](https://getfedora.org/), [POP!_OS](https://system76.com/pop), [openSUSE](https://www.opensuse.org/) and [Manjaro](https://manjaro.org) and of course [Arch](https://www.archlinux.org/) 64bit versions. I see no reason it would not work on any other 64bit Linux distro
+Tested on [Fedora](https://getfedora.org/), [POP!_OS](https://system76.com/pop), [openSUSE](https://www.opensuse.org/) and [Manjaro](https://manjaro.org) and of course [Arch Linux](https://www.archlinux.org/) 64bit versions. I see no reason it would not work on any other 64bit Linux distro
 
 ## Some References
 - [Alex Kontos](https://github.com/MrAlex94) awesome work. Find out more about Waterfox and [the guys](https://www.waterfox.net/about/). Waterfox is [here](https://github.com/MrAlex94/Waterfox) on GitHub;
