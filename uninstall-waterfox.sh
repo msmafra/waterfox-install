@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+#
+# Author: Marcelo dos Santos Mafra <msmafram@gmail.com>
+#
+# Waterfox Uninstallation Script for the former to be waterfox-install.sh (/usr/lib64/)
+#
+#/ Usage: SCRIPTNAME [OPTIONS]... [ARGUMENTS]...
+#/
+#/ OPTIONS
+#/   -h, --help
+#/                Print this help message
 set -o errexit
 set -o errtrace
 set -o nounset
@@ -56,7 +66,7 @@ echo -e "Uninstall Waterfox from /usr/lib64\n"
 wfxdest="/usr/lib64/"
 wfxexec="/usr/bin/waterfox"
 wfxdesktop="/usr/share/applications/waterfox.desktop"
-wfxpath=""/usr/lib64/waterfox/""
+wfxpath="/usr/lib64/waterfox/"
 
 echo -e "Removing files from $wfxpath"
 rm --verbose --recursive --force $wfxpath*
