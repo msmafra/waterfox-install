@@ -1,16 +1,24 @@
 - [X] \(Optional) Improve README.md;
-- [X] Create function/script to get the correct latest url of Waterfox. Automate it in the script;
+- [X] Create function to get the correct url of the latest **Waterfox** version. Automate it in the script;
 - [ ] \(Optional) Beautify the scripts files;
-- [X] Decide what to do with the getWFXVersion and getLocalWFXVersion functions;
-- [ ] pgrep to check if the waterfox process is running;
-- [ ] Bash script best practices;
+- [X] Decide what to do with the *getWFXVersion* and *getLocalWFXVersion* functions.  
+Gone!;
+- [ ] **pgrep** to check if there is a waterfox process is running;
+- [ ] Apply Bash best practices to the script. Trying to;
 - [ ] \(Optional) Fedora SilverBlue user install (non system wide);
-- [X] Uninstall script
-- [ ] Uninstall method;
+- [X] Uninstall script. Separated one for the **/usr/lib64/**;
+- [ ] Uninstall method. Remove profile also??;
 - [ ] Chosing between testing (alpha/beta/rc) and production (different dir for testing??);
-- [ ] Choice of dir: /opt, /usr/lib64 or ${HOME}/waterfox;
-- [ ] Cleaning up after Installation. Probably not necessary since it is using /tmp;
-- [ ] Give choice to keep the download file. Copying it from /tmp to ~/Downloads;
-- [ ] Give the ability to choose between curl or wget or just change everything to one of them. Also check which one is available;
-- [ ] \(Optiional) Remove waterfox.desktop creation from inside the script and set it to be downloaded from https://raw.githubusercontent.com/msmafra/waterfox-install/master/waterfox.desktop;
-- [ ] Install the script on the system to install, update or uninstall Waterfox;
+- [ ] Choice of dir: **/opt/**, **/usr/lib64/** or **${HOME}/waterfox/** (probably only on SilverBlue). I will amost certain to set it to **/opt/**;
+- [ ] Cleaning up after Installation. Probably not necessary since it is using **/tmp/**;
+- [ ] Give choice to keep the download file. Copying it from **/tmp/** to **~/Downloads/**;
+- [ ] \(Optional) Give the ability to choose between **curl** or **wget**.
+- [ ] Check the existence of **curl** or **wget** and set one of them to handle the variables and functions;
+- [ ] Use the backslash (\\) before executables to avoid aliases;
+- [ ] \(Optional) Remove waterfox.desktop creation from inside the script and set it to be downloaded from  
+https://raw.githubusercontent.com/msmafra/waterfox-install/master/waterfox.desktop;
+- [ ] Check beforehand the existance of the programs needed for the script to run;
+- [ ] Create an waterfox Bash file to be used on **/usr/bin/** (or elsewhere). Separated from the script on embeded;
+- [ ] Install the script as a system install, update or uninstall helper for **Waterfox**;
+- [ ] Check the files' and downloaded ones' checksum (??);
+- [ ] Do not forget to update the README.MD file with the new information;
