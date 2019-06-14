@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# Author: Marcelo dos Santos Mafra
+# <https://stackoverflow.com/users/473433/msmafra>
+# <https://www.reddit.com/user/msmafra/>
+#
 # Waterfox Installation Script (just install. Sorry!)
 # Version 0.7.5
 # Downloads it to /tmp, extracts it to /usr/lib64/, creates waterfox.desktop file in /usr/share/applications/ a symbolic link in /usr/bin pointing to /usr/lib64/waterfox/waterfox
