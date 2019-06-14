@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 #
-# Author: Marcelo dos Santos Mafra <msmafram@gmail.com>
+# Author: Marcelo dos Santos Mafra
+# <https://stackoverflow.com/users/473433/msmafra>
+# <https://www.reddit.com/user/msmafra/>
 #
 # Waterfox Uninstallation Script for the former to be waterfox-install.sh (/usr/lib64/)
 #
