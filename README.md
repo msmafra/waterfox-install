@@ -1,8 +1,9 @@
-# Waterfox Install
-Waterfox download and installation script.
-Tested on [Fedora](https://getfedora.org/), [POP!_OS](https://system76.com/pop), [openSUSE](https://www.opensuse.org/) and [Manjaro](https://manjaro.org) and of course [Arch Linux](https://www.archlinux.org/) 64bit versions. I see no reason it would not work on any other 64bit Linux distro
+# Waterfox Install for Linux
 
-## Some References
+Waterfox download and installation script.
+Tested on [Fedora](https://getfedora.org/), [POP!_OS](https://system76.com/pop), [openSUSE](https://www.opensuse.org/), [Manjaro](https://manjaro.org) and of course [Arch Linux](https://www.archlinux.org/) 64bit versions. I see no reason it would not work on any other 64bit Linux distro.
+
+### Some References
 - [Alex Kontos](https://github.com/MrAlex94) awesome work. Find out more about Waterfox and [the guys](https://www.waterfox.net/about/). Waterfox is [here](https://github.com/MrAlex94/Waterfox) on GitHub;
 
 - The waterfox.desktop file is adapted from [Arch Linux's AUR waterfox-bin.git](https://aur.archlinux.org/cgit/aur.git/plain/waterfox.desktop?h=waterfox-bin).
@@ -13,8 +14,10 @@ Tested on [Fedora](https://getfedora.org/), [POP!_OS](https://system76.com/pop),
 
     `88: Icon=waterfox-icon => Icon=/usr/lib64/waterfox/browser/chrome/icons/default/default256.png`
 
-## Some Information
-This script will extract watefox to /usr/lib64/, create a symbolic link in /usr/bin/ and a .desktop file on /usr/share/applications/. And there is no uninstallation yet.
+- /usr/bin/waterfox file is adapted from Fedora's version of /usr/bin/firefox as a base, to do a quick adaptation. File is created by DNF package manager during the installation of Mozilla Firefox browser.
+
+### Some Information
+The installation script will, download waterfox-xx.xx.xx.en-US.linux-x86_64.tar.bz2 and extract it to /usr/lib64/, create a symbolic link in /usr/bin/, create a [desktop entry](https://specifications.freedesktop.org/desktop-entry-spec/latest/index.html) file (waterfox.desktp) on /usr/share/applications/. And there is no uninstallation yet.
 
 ## Using It
 ### Install
@@ -38,7 +41,7 @@ then
 
 ### Uninstall
 
-Created separated uninstallation file for the original (current) installation because of its place of installation /usr/lib64. It will probably change on the next version.
+Created separated uninstallation file for the 0.x installation because of its place of installation /usr/lib64/. It will probably change on the next version.
 Will be integrated in the final version.
 
 Run
@@ -57,5 +60,4 @@ then
 
 ## Newer Versions Of Waterfox
 
-The script was pointing to the old... previous download page https://waterfoxproject.org/en-US/waterfox/new/?scene=1, which is not updated so it is only able to download version 56.2.8 (at the writing of this 20190519 and edit of it on 20190530). The "new" download page https://www.waterfox.net/releases/ has now all OSes and also the possiblity to download the testing and production versions. The ability to chose which one is not implement in the current version 0.5
-And I also don't know which site to point to. ;)
+The script was pointing to the old... previous download page https://waterfoxproject.org/en-US/waterfox/new/?scene=1, which is not updated anymore. Actually https://waterfoxproject.org/ is now redirected to https://www.waterfox.net/. The "new" download page has now all OSes and also the possiblity to download the testing and production versions. The ability to choose between production and development version is not implemented in the current version 0.x but will be in 1.0. Also t
