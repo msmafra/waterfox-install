@@ -25,29 +25,22 @@ __invocation="$(printf %q "${__file}")$((($#)) && printf ' %q' "$@" || true)"
 ### Functions ##############################################################################
 
 function __see_ya_even () {
-  info "Say goodnight, Babs. Babs: Goodnight, Babs."
-}
 
-function emergency () {                                __b3bp_log emergency "${@}"; exit 1; }
-function alert ()     { [[ "${LOG_LEVEL:-0}" -ge 1 ]] && __b3bp_log alert "${@}"; true; }
-function critical ()  { [[ "${LOG_LEVEL:-0}" -ge 2 ]] && __b3bp_log critical "${@}"; true; }
-function error ()     { [[ "${LOG_LEVEL:-0}" -ge 3 ]] && __b3bp_log error "${@}"; true; }
-function warning ()   { [[ "${LOG_LEVEL:-0}" -ge 4 ]] && __b3bp_log warning "${@}"; true; }
-function notice ()    { [[ "${LOG_LEVEL:-0}" -ge 5 ]] && __b3bp_log notice "${@}"; true; }
-function info ()      { [[ "${LOG_LEVEL:-0}" -ge 6 ]] && __b3bp_log info "${@}"; true; }
-function debug ()     { [[ "${LOG_LEVEL:-0}" -ge 7 ]] && __b3bp_log debug "${@}"; true; }
+    info "Say goodnight, Babs. Babs: Goodnight, Babs."
+
+}
 
 function help () {
 
-  if [[ "${__helptext:-}" ]]; then
-    echo "" 1>&2
-    echo " ${__helptext}" 1>&2
-    echo "" 1>&2
-    echo "  ${__usage:-No usage available}" 1>&2
-    echo "" 1>&2
-  fi
+    if [[ "${__helptext:-}" ]]; then
+        echo "" 1>&2
+        echo " ${__helptext}" 1>&2
+        echo "" 1>&2
+        echo "  ${__usage:-No usage available}" 1>&2
+        echo "" 1>&2
+    fi
 
-  exit 1
+    exit 1
 
 }
 
@@ -59,34 +52,51 @@ EOF
  Please run as root
 EOF
 
-readonly whoisit=$(whoami | awk '{print $1}' | tr -d "\n")
+readonly whoisit=$(\whoami | \awk '{print $1}' | \tr -d "\n")
+readonly rstall="\e[0m"
+readonly rstbold="\e[21m"
+readonly bold="\e[1m"
+readonly red="\e[31m"
+readonly yel="\e[93m"
 
-if [[ "${whoisit}" = "root" ]];then
+if [[ "${whoisit}" = "root" ]]
+then
 
-echo -e "Uninstall Waterfox from /usr/lib64\n"
+    printf "${bold}-- %s --${rstall}\n\n" "Script To Uninstall Waterfox From /usr/lib64/"
 
-wfxdest="/usr/lib64/"
-wfxexec="/usr/bin/waterfox"
-wfxdesktop="/usr/share/applications/waterfox.desktop"
-wfxpath="/usr/lib64/waterfox/"
+    wfxdest="/usr/lib64/"
+    wfxexec="/usr/bin/waterfox"
+    wfxdesktop="/usr/share/applications/waterfox.desktop"
+    wfxpath="/usr/lib64/waterfox"
 
-echo -e "Removing files from $wfxpath"
-rm --verbose --recursive --force $wfxpath*
+    printf "${yel}Removing files from %s${rstall}\n" "${wfxpath}"
+    if [[ -d "${wfxpath}" ]];then
+        echo \rm --verbose --recursive --force "${wfxpath}"/*
+    fi
 
-echo -e "Deleting $wfxdesktop"
-rm --verbose --force $wfxdesktop
+    printf "${yel}Deleting %s${rstall}\n" "${wfxdesktop}"
+    if [[ -e "${wfxdesktop}" ]];then
+        echo \rm --verbose --force "${wfxdesktop}"
+    fi
 
-echo -e "Deleting $wfxexec"
-rm --verbose --force $wfxexec
+    printf "${yel}Deleting %s${rstall}\n" "${wfxexec}"
+    if [[ -e "${wfxexec}" ]];then
+        echo -e \rm --verbose --force "${wfxexec}"
+    fi
 
-echo -e "Removing the directory"
-rm --verbose --dir --recursive --force /usr/lib64/watefox
+    printf "${yel}Removing the directory %s${rstall}\n" "${wfxpath}"
+    if [[ -d "${wfxpath}" ]];then
+        echo \rm --verbose --dir --recursive --force "${wfxpath}"
+    else
+        printf "%s is not a directory or does not exist.\n" "${wfxpath}"
+        exit 1
+    fi
 
-echo -e "\nLeaving..."
+    printf "%s\n" "Leaving..."
 
 else
 
-  help
-  exit 1
+    help
+    exit 1
 
 fi
