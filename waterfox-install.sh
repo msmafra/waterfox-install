@@ -6,18 +6,12 @@
 #
 # Waterfox Installation Script (just install. SORRY!). Now there is a uninstallation file.
 # Version 0.8.5
-# Downloads it to /tmp/, extracts it to /usr/lib64/, creates waterfox.desktop file in /usr/share/applications/ a symbolic link in /usr/bin pointing to /usr/lib64/waterfox/waterfox
 #
-# abort on nonzero exitstatus
 set -o errexit
-# abort on unbound variable
 set -o nounset
-# don't hide errors within pipes
 set -o pipefail
-# Print commands and their arguments as they are executed
 #set -o xtrace
-# The url from the download page
-readonly wfxpage="https://www.waterfox.net/releases/" # Most recent download links page
+readonly wfxpage="https://www.waterfox.net/releases/" # The url of the download page
 readonly wfxurl=$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort | \uniq | \grep --max-count=1 ".bz2") # Get the URL from the releases page
 readonly wfxfile=$(printf "%s" "${wfxurl}" | \awk --field-separator "/" '{print $7}' | \tr --delete "\n") # Get the file name from the URL
 readonly wfxdest="/usr/lib64/" # Install destination
@@ -35,7 +29,7 @@ readonly wfxwaitretry=15
 
 function get_available_version_wfx() {
 
-    # Gets the production version of Waterfox from waterfox.net.
+    # Gets the production version of Waterfox from waterfox.net
     local wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort | \uniq | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "Available Waterfox version %s.%s.%s\n", $1,$2,$3}')"
     printf "%s" "${wfxver}"
 
@@ -46,7 +40,7 @@ function get_local_version_wfx() {
     # Obtains the local installed version if there is one
     local wfxwhere=$([[ -f "/usr/bin/waterfox" ]] && printf true || printf "")
 
-    if [[ "${wfxwhere}"  ]]
+    if [[ "${wfxwhere}" ]]
     then
         local wfxlver=$("${wfxbinpath}" --version | \awk --field-separator '[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | \awk --field-separator "." '{printf "%s.%s.%s", $1,$2,$3}' | \tr " " "\n" )
         printf "%s" "${wfxlver}"
@@ -59,9 +53,8 @@ function get_local_version_wfx() {
 
 function get_the_drowned_fox() {
 
-    # Downloads the .tar.bz2 file. Firstly, checks if file exists remotely
+    # Downloads the .tar.bz2 file. Firstly, checks if file exists remotely. If file is not there or yet available to download (happened on version 56.2.10) exits
     local wfxfcheck=$(\wget --spider --show-progress --quiet --server-response "${wfxurl}" 2>&1 | \head --lines=1 | \awk 'NR==1{print $2}')
-    # If file is not there or yet available to download (happened on version 56.2.10) exits
     if [[ ! "${wfxfcheck}" = "200" ]]
     then
         printf "\nNo file is available for downloading! Or some other error. Leaving...%b\n"
@@ -469,6 +462,7 @@ function change_directory() {
     # Change to /tmp so the downloaded file will be automatically deleted after restart or shutdown
     printf "\nEntering /tmp...%b\n"
     cd "${tmpdir}" && \pwd
+
 }
 
 change_directory
