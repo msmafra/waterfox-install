@@ -18,6 +18,7 @@ WFXDESKTOP="/usr/share/applications/waterfox.desktop" # Desktop entry file
 WFXBINPATH="/usr/lib64/waterfox/waterfox" # Main executable
 WFXICONPATH="/usr/lib64/waterfox/browser/chrome/icons/default/default256.png" # Desktop entry default icon
 TMPDIR="/tmp/" # Change to tmp to automatically remove file or folders
+PLACES=("/usr/bin/" "/usr/local/bin/")
 
 # Obtains the most recent downloadable version
 function getAvailableWFXVersion() {
@@ -31,7 +32,7 @@ function getAvailableWFXVersion() {
 # Obtains the local installed version if there is one
 function getLocalWFXVersion() {
 
-    WFXWHERE=$( \whereis -b waterfox | awk '$2 != "" {print true}' | tr -d "\n" )
+    WFXWHERE=$( \whereis -B "${PLACES}" -b waterfox | awk '$2 != "" {print true}' | tr -d "\n" )
 
     if [[ -n $WFXWHERE  ]];then
         WFXLVER=$(\waterfox --version | awk -F'[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | awk -F"." '{printf "%s.%s.%s", $1,$2,$3}' | tr " " "\n" )
