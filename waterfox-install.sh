@@ -1,86 +1,96 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
 #
-# Waterfox Installation Script (just install. Sorry!)
-# Version 0.7.6
+# Waterfox Installation Script (just install. SORRY!). Now there is a uninstallation file.
+# Version 0.8.5
 # Downloads it to /tmp/, extracts it to /usr/lib64/, creates waterfox.desktop file in /usr/share/applications/ a symbolic link in /usr/bin pointing to /usr/lib64/waterfox/waterfox
 #
+# abort on nonzero exitstatus
+set -o errexit
+# abort on unbound variable
+set -o nounset
+# don't hide errors within pipes
+set -o pipefail
+# Print commands and their arguments as they are executed
+#set -o xtrace
 # The url from the download page
-WFXPAGE="https://www.waterfox.net/releases/" # Most recent download links page
-WFXURL=$(wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep -m 1 ".bz2") # Get the URL from the releases page
-WFXFILE="$(echo "$WFXURL" | awk  -F "/" '{print $7}' | tr -d "\n")" # Get the file name from the URL
-WFXDEST="/usr/lib64/" # Install destination
-WFXEXEC="/usr/bin/waterfox" # Symbolic link to main executable
-WFXDESKTOP="/usr/share/applications/waterfox.desktop" # Desktop entry file
-WFXBINPATH="/usr/lib64/waterfox/waterfox" # Main executable
-WFXICONPATH="/usr/lib64/waterfox/browser/chrome/icons/default/default256.png" # Desktop entry default icon
-TMPDIR="/tmp/" # Change to tmp to automatically remove file or folders
-PLACES=("/usr/bin/" "/usr/local/bin/")
+readonly wfxpage="https://www.waterfox.net/releases/" # Most recent download links page
+readonly wfxurl=$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort | \uniq | \grep --max-count=1 ".bz2") # Get the URL from the releases page
+readonly wfxfile=$(printf "%s" "${wfxurl}" | \awk --field-separator "/" '{print $7}' | \tr --delete "\n") # Get the file name from the URL
+readonly wfxdest="/usr/lib64/" # Install destination
+readonly wfxexec="/usr/bin/waterfox" # Symbolic link to main executable
+readonly wfxdesktop="/usr/share/applications/waterfox.desktop" # Desktop entry file
+readonly wfxbinpath="/usr/lib64/waterfox/waterfox" # Main executable
+readonly wfxiconpath="/usr/lib64/waterfox/browser/chrome/icons/default/default256.png" # Desktop entry default icon. Available: default16.png  default22.png  default24.png  default256.png  default32.png  default48.png
+readonly tmpdir="/tmp/" # Change to tmp to automatically remove file or folders
+readonly places="/usr/bin/ /usr/local/bin/"
+## WGET or CURL values ##
+readonly wfxtries=5
+readonly wfxtimeout=10
+readonly wfxwait=5
+readonly wfxwaitretry=15
 
-# Obtains the most recent downloadable version
-function getAvailableWFXVersion() {
+function get_available_version_wfx() {
 
-    # Gets the production version of Waterfox from waterfox.net. Comment this to be able to download the testing verions
-    WFXVER="$(\wget -qO- $WFXPAGE | grep -Eo "(http|https)://[a-zA-Z0-9./?=_-]*" | sort | uniq | grep -m 1 ".bz2" | awk -v FS="/" '{print $7}' | awk -F"-" '{print $2}' | awk -F"." '{printf "Available Waterfox version %s.%s.%s\n", $1,$2,$3}')"
-    echo $WFXVER
+    # Gets the production version of Waterfox from waterfox.net.
+    local wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort | \uniq | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "Available Waterfox version %s.%s.%s\n", $1,$2,$3}')"
+    printf "%s" "${wfxver}"
 
 }
 
-# Obtains the local installed version if there is one
-function getLocalWFXVersion() {
+function get_local_version_wfx() {
 
-    WFXWHERE=$( \whereis -B "${PLACES}" -b waterfox | awk '$2 != "" {print true}' | tr -d "\n" )
+    # Obtains the local installed version if there is one
+    local wfxwhere=$([[ -f "/usr/bin/waterfox" ]] && printf true || printf "")
 
-    if [[ -n $WFXWHERE  ]];then
-        WFXLVER=$(\waterfox --version | awk -F'[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | awk -F"." '{printf "%s.%s.%s", $1,$2,$3}' | tr " " "\n" )
-        echo $WFXLVER
-        sleep 2s
+    if [[ "${wfxwhere}"  ]]
+    then
+        local wfxlver=$("${wfxbinpath}" --version | \awk --field-separator '[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | \awk --field-separator "." '{printf "%s.%s.%s", $1,$2,$3}' | \tr " " "\n" )
+        printf "%s" "${wfxlver}"
     else
-        echo -e "\nNo installed version found in $WFXDEST\n"
-        sleep 2s
+        printf "No installed version found in %s %b\n" "${wfxdest}"
     fi
 
 }
 
-# Downloads the .tar.bz2 file
-function getTheDrownedFox() {
 
-    # Check if file exists
-    WFXFCHECK=$(\wget --spider --show-progress -qS $WFXURL 2>&1 | head -n 1 | awk 'NR==1{print $2}')
-    # If file is not there exits\
-        # If the file is not yet available to download (happened on version 56.2.10)
-    if [[ ! "${WFXFCHECK}" = "200" ]];then
-        echo -e "\nNo file found! or another error Leaving...\n"
+function get_the_drowned_fox() {
+
+    # Downloads the .tar.bz2 file. Firstly, checks if file exists remotely
+    local wfxfcheck=$(\wget --spider --show-progress --quiet --server-response "${wfxurl}" 2>&1 | \head --lines=1 | \awk 'NR==1{print $2}')
+    # If file is not there or yet available to download (happened on version 56.2.10) exits
+    if [[ ! "${wfxfcheck}" = "200" ]]
+    then
+        printf "\nNo file is available for downloading! Or some other error. Leaving...%b\n"
         exit 1
     else
-        # If the file is there starts the download
-        echo -e "\nStarting the download...\n"
-        \wget --show-progress -t 5 -T 10 -w 5 --waitretry=15 -c $WFXURL
-
+        # If the file is there, it starts the download
+        printf "\nStarting the download...%b\n"
+        \wget --show-progress --tries="${wfxtries}" --timeout="${wfxtimeout}" --wait="${wfxwait}" --waitretry="${wfxwaitretry}" --continue "${wfxurl}"
     fi
 
 }
 
-# Extract the .tar.bz2 file to /usr/lib64/ creating the subfolder named waterfox
-function extractIt() {
 
-    echo -e "\nExtracting ...\n"
-    echo $WFXFILE
-    tar -xvf $WFXFILE -C $WFXDEST
+function extract_it() {
+
+    # Extract the .tar.bz2 file to /usr/lib64/ creating the subfolder named waterfox
+    printf "\nExtracting: %s" "${wfxfile}"
+    \tar --extract --verbose --file "${wfxfile}" --directory="${wfxdest}"
 
 }
 
-# Creates the waterfox.desktop file to be accessed system wide
-function createDesktopFile() {
+function create_desktop_file_wfx() {
 
-    # If there is not already a file there, create one
-    if [[ ! -f "$WFXDESKTOP" ]]; then
-        echo -e "\nCreating the waterfox.desktop file...\n"
+    # Creates the waterfox.desktop file to be accessed system wide. If there is nothing already there, create one
+    if [[ ! -f "${wfxdesktop}" ]]
+    then
+        printf "\nCreating the waterfox.desktop file...%b\n"
         # waterfox.desktop is taken from AUR : waterfox-bin.git https://aur.archlinux.org/cgit/aur.git/plain/waterfox.desktop?h=waterfox-bin
-        tee -i $WFXDESKTOP <<WFOX
+        \tee --ignore-interrupts "${wfxdesktop}" <<WFOX
 [Desktop Entry]
 Name=Waterfox
 GenericName=Web Browser
@@ -165,10 +175,10 @@ Comment[vi]=Để duyệt các trang web
 Comment[zh_CN]=浏览互联网
 Comment[zh_TW]=瀏覽網際網路
 Exec=waterfox %u
-TryExec=$WFXBINPATH
+TryExec=${wfxbinpath}
 Terminal=false
 Type=Application
-Icon=$WFXICONPATH
+Icon=${wfxiconpath}
 Categories=Network;WebBrowser;
 MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
 StartupNotify=true
@@ -436,30 +446,35 @@ Name[zh_TW]=新增隱私視窗
 Exec=waterfox -private-window
 WFOX
     else
-        echo -e "\n The waterfox.desktop file already exists!"
+        printf "\n The waterfox.desktop file already exists!%b\n"
     fi
 
 }
 
-# Creates the symbolic for the main executable on /usr/bin
-function symbolicWFX() {
+function symbolic_wfx() {
 
-    if [[ ! -f "$WFXEXEC" ]]; then
-        echo -e "\nCreating the symbolic link...\n"
-        ln -svf $WFXBINPATH $WFXEXEC
+    # Creates the symbolic for the main executable on /usr/bin
+    if [[ ! -f "${wfxexec}" ]]
+    then
+        printf "\nCreating the symbolic link...%b\n"
+        \ln --symbolic --verbose --force "${wfxbinpath}" "${wfxexec}"
     else
-        echo -e "\nExecutable file is already there!\n"
+        printf "\nExecutable file is already there!%b\n"
     fi
 
 }
 
-# Change to /tmp so the downloaded file will be automatically deleted after restart or shutdown
-echo -e "\nEntering /tmp...\n"
-cd "$TMPDIR" && pwd
+function change_directory() {
 
-getLocalWFXVersion
-getAvailableWFXVersion
-getTheDrownedFox
-extractIt
-createDesktopFile
-symbolicWFX
+    # Change to /tmp so the downloaded file will be automatically deleted after restart or shutdown
+    printf "\nEntering /tmp...%b\n"
+    cd "${tmpdir}" && \pwd
+}
+
+change_directory
+get_local_version_wfx
+get_available_version_wfx
+get_the_drowned_fox
+extract_it
+create_desktop_file_wfx
+symbolic_wfx
