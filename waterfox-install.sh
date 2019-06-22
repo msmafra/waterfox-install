@@ -5,7 +5,7 @@
 # <https://www.reddit.com/user/msmafra/>
 #
 # Waterfox Installation Script (just install. Sorry!)
-# Version 0.7.5
+# Version 0.7.6
 # Downloads it to /tmp/, extracts it to /usr/lib64/, creates waterfox.desktop file in /usr/share/applications/ a symbolic link in /usr/bin pointing to /usr/lib64/waterfox/waterfox
 #
 # The url from the download page
