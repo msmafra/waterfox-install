@@ -6,7 +6,7 @@ Tested on [Fedora](https://getfedora.org/), [POP!_OS](https://system76.com/pop),
 ### Some References
 - [Alex Kontos](https://github.com/MrAlex94) awesome work. Find out more about Waterfox and [the guys](https://www.waterfox.net/about/). Waterfox is [here](https://github.com/MrAlex94/Waterfox) on GitHub;
 
-- The waterfox.desktop file is adapted from [Arch Linux's AUR waterfox-bin.git](https://aur.archlinux.org/cgit/aur.git/plain/waterfox.desktop?h=waterfox-bin).
+- The waterfox.desktop file is adapted from the one on [Arch Linux's AUR waterfox-bin.git](https://aur.archlinux.org/cgit/aur.git/tree/waterfox.desktop?h=waterfox-bin). Here is the raw/text only version: [waterfox.desktop raw](https://aur.archlinux.org/cgit/aur.git/plain/waterfox.desktop?h=waterfox-bin).
   - Changes:
   Added to the [waterfox.desktop](https://github.com/msmafra/waterfox-install/blob/master/waterfox.desktop) the [TryExec key](https://specifications.freedesktop.org/desktop-entry-spec/latest/ar01s06.html) entry at line `85: + TryExec=/usr/lib64/waterfox/waterfox`  with the full path of the application and also `88: Icon=waterfox-icon => Icon=/usr/lib64/waterfox/browser/chrome/icons/default/default256.png` altered the [Icon key](https://specifications.freedesktop.org/desktop-entry-spec/latest/ar01s06.html) by adding the full path for the 256px x 256px png icon. To point to the icon with the best quality.
 
