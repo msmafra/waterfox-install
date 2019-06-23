@@ -12,7 +12,7 @@ set -o nounset
 set -o pipefail
 #set -o xtrace
 readonly wfxpage="https://www.waterfox.net/releases/" # The url of the download page
-readonly wfxurl=$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort | \uniq | \grep --max-count=1 ".bz2") # Get the URL from the releases page
+readonly wfxurl=$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort | \grep --max-count=1 ".bz2") # Get the URL from the releases page
 readonly wfxfile=$(printf "%s" "${wfxurl}" | \awk --field-separator "/" '{print $7}' | \tr --delete "\n") # Get the file name from the URL
 readonly wfxdest="/usr/lib64/" # Install destination
 readonly wfxexec="/usr/bin/waterfox" # Symbolic link to main executable
@@ -30,7 +30,7 @@ readonly wfxwaitretry=15
 function get_available_version_wfx() {
 
     # Gets the production version of Waterfox from waterfox.net
-    local wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort | \uniq | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "Available Waterfox version %s.%s.%s\n", $1,$2,$3}')"
+    local wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "%b\nAvailable Waterfox version %s.%s.%s\n", $1,$2,$3}')"
     printf "%s" "${wfxver}"
 
 }
@@ -38,11 +38,11 @@ function get_available_version_wfx() {
 function get_local_version_wfx() {
 
     # Obtains the local installed version if there is one
-    local wfxwhere=$([[ -f "/usr/bin/waterfox" ]] && printf true || printf "")
+    local wfxwhere=$( [[ -f "${wfxexec}" ]] && printf true || printf "" )
 
     if [[ "${wfxwhere}" ]]
     then
-        local wfxlver=$("${wfxbinpath}" --version | \awk --field-separator '[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | \awk --field-separator "." '{printf "%s.%s.%s", $1,$2,$3}' | \tr " " "\n" )
+        local wfxlver=$( "${wfxbinpath}" --version | \awk --field-separator '[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | \awk --field-separator "." '{printf "%s.%s.%s", $1,$2,$3}' )
         printf "%s" "${wfxlver}"
     else
         printf "No installed version found in %s %b\n" "${wfxdest}"
@@ -50,11 +50,10 @@ function get_local_version_wfx() {
 
 }
 
-
 function get_the_drowned_fox() {
 
-    # Downloads the .tar.bz2 file. Firstly, checks if file exists remotely. If file is not there or yet available to download (happened on version 56.2.10) exits
-    local wfxfcheck=$(\wget --spider --show-progress --quiet --server-response "${wfxurl}" 2>&1 | \head --lines=1 | \awk 'NR==1{print $2}')
+    # Downloads the .tar.bz2 file. Firstly, checks if file exists remotely. If file is not there or yet available to download (happened on version 56.2.10 release) exits
+    local wfxfcheck=$( \wget --spider --show-progress --quiet --server-response "${wfxurl}" 2>&1 | \head --lines=1 | \awk 'NR==1{print $2}' )
     if [[ ! "${wfxfcheck}" = "200" ]]
     then
         printf "\nNo file is available for downloading! Or some other error. Leaving...%b\n"
@@ -66,7 +65,6 @@ function get_the_drowned_fox() {
     fi
 
 }
-
 
 function extract_it() {
 
