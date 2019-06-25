@@ -19,12 +19,13 @@ https://raw.githubusercontent.com/msmafra/waterfox-install/master/waterfox.deskt
 - [ ] Check beforehand the existance of the programs needed for the script to run;
 - [ ] Create an waterfox Bash file to be used on **/usr/bin/** (or elsewhere). Separated from the script on embeded;
 - [ ] Install the script as a system install, update or uninstall helper for **Waterfox**;
-- [ ] Check the files' and downloaded ones' checksum (??);
+- [ ] \(Consider) Check the files' and downloaded ones' checksum (??);
 - [ ] Do not forget to update the **README.MD** file with the new information;
 - [ ] Using a **main()** function???;
-- [ ] Transform most of the variables with subshell, commands etc into functions;
-- [ ] Use t _ or __ before function names (????). Best practices (??);
+- [ ] \(Consider) Transform most of the variables with subshell, commands etc into functions;
+- [ ] \(Consider) Use t _ or __ before function names (????). Best practices (??);
 - [ ] User **shift** on functions that acept parameters;
 - [ ] Lowercase variables names on 0.x versions;
 - [ ] Merge waterfox.desktop with the waterfox.desktop for KDE also from AUR. Set version to 1.1;  
 https://raw.githubusercontent.com/hawkeye116477/waterfox-deb/master/waterfox-kde/waterfox.desktop
+- [ ] \(Consider) On the uninstallation script instead of using **rm** to remove the files use **mv** to move the files and folders to **/tmp/waterfox-uninstallation**, so everything will be removed on restart or shutdown. Alert the user;
