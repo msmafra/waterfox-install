@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 #
+# Waterfox Installation Script (just install. SORRY!). Now there is a uninstallation file.
+# Version 0.8.5
+#
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
 #
-# Waterfox Installation Script (just install. SORRY!). Now there is a uninstallation file.
-# Version 0.8.5
 #
 set -o errexit
 set -o nounset
 set -o pipefail
 #set -o xtrace
 readonly wfxpage="https://www.waterfox.net/releases/" # The url of the download page
-readonly wfxurl=$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort | \grep --max-count=1 ".bz2") # Get the URL from the releases page
+readonly wfxurl=$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | \grep --max-count=1 ".bz2") # Get the URL from the releases page
 readonly wfxfile=$(printf "%s" "${wfxurl}" | \awk --field-separator "/" '{print $7}' | \tr --delete "\n") # Get the file name from the URL
 readonly wfxdest="/usr/lib64/" # Install destination
 readonly wfxexec="/usr/bin/waterfox" # Symbolic link to main executable
@@ -21,21 +22,20 @@ readonly wfxbinpath="/usr/lib64/waterfox/waterfox" # Main executable
 readonly wfxiconpath="/usr/lib64/waterfox/browser/chrome/icons/default/default256.png" # Desktop entry default icon. Available: default16.png  default22.png  default24.png  default256.png  default32.png  default48.png
 readonly tmpdir="/tmp/" # Change to tmp to automatically remove file or folders
 readonly places="/usr/bin/ /usr/local/bin/"
-## WGET or CURL values ##
 readonly wfxtries=5
 readonly wfxtimeout=10
 readonly wfxwait=5
 readonly wfxwaitretry=15
-
-function get_available_version_wfx() {
+## Functions ##
+function wfx_check_available_version() {
 
     # Gets the production version of Waterfox from waterfox.net
-    local wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "%b\nAvailable Waterfox version %s.%s.%s\n", $1,$2,$3}')"
+    local wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "%b\nAvailable Waterfox version %s.%s.%s\n", $1,$2,$3}')"
     printf "%s" "${wfxver}"
 
 }
 
-function get_local_version_wfx() {
+function wfx_check_local_version() {
 
     # Obtains the local installed version if there is one
     local wfxwhere=$( [[ -f "${wfxexec}" ]] && printf true || printf "" )
@@ -45,36 +45,38 @@ function get_local_version_wfx() {
         local wfxlver=$( "${wfxbinpath}" --version | \awk --field-separator '[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | \awk --field-separator "." '{printf "%s.%s.%s", $1,$2,$3}' )
         printf "%s" "${wfxlver}"
     else
-        printf "No installed version found in %s %b\n" "${wfxdest}"
+        local message="No installed version found in %s ${wfxdest}%b\n"
+        printf "${message}"
     fi
 
 }
 
-function get_the_drowned_fox() {
+function wfx_get_the_drowned_fox() {
 
     # Downloads the .tar.bz2 file. Firstly, checks if file exists remotely. If file is not there or yet available to download (happened on version 56.2.10 release) exits
     local wfxfcheck=$( \wget --spider --show-progress --quiet --server-response "${wfxurl}" 2>&1 | \head --lines=1 | \awk 'NR==1{print $2}' )
     if [[ ! "${wfxfcheck}" = "200" ]]
     then
-        printf "\nNo file is available for downloading! Or some other error. Leaving...%b\n"
+        printf "%b\nNo file is available for downloading! Or some other error. Leaving...%b\n"
         exit 1
     else
         # If the file is there, it starts the download
-        printf "\nStarting the download...%b\n"
+        printf "%b\nStarting the download...%b\n"
         \wget --show-progress --tries="${wfxtries}" --timeout="${wfxtimeout}" --wait="${wfxwait}" --waitretry="${wfxwaitretry}" --continue "${wfxurl}"
     fi
 
 }
 
-function extract_it() {
+function wfx_extract_it() {
 
     # Extract the .tar.bz2 file to /usr/lib64/ creating the subfolder named waterfox
-    printf "\nExtracting: %s" "${wfxfile}"
-    \tar --extract --verbose --file "${wfxfile}" --directory="${wfxdest}"
+    printf "%b\nExtracting: %s%b\n" "${wfxfile}"
+    \tar --list --verbose --file "${wfxfile}" --directory="${wfxdest}"
+    #\tar --extract --verbose --file "${wfxfile}" --directory="${wfxdest}"
 
 }
 
-function create_desktop_file_wfx() {
+function wfx_create_desktop_file() {
 
     # Creates the waterfox.desktop file to be accessed system wide. If there is nothing already there, create one
     if [[ ! -f "${wfxdesktop}" ]]
@@ -442,7 +444,7 @@ WFOX
 
 }
 
-function symbolic_wfx() {
+function wfx_create_symbolic_link() {
 
     # Creates the symbolic for the main executable on /usr/bin
     if [[ ! -f "${wfxexec}" ]]
@@ -450,12 +452,12 @@ function symbolic_wfx() {
         printf "\nCreating the symbolic link...%b\n"
         \ln --symbolic --verbose --force "${wfxbinpath}" "${wfxexec}"
     else
-        printf "\nExecutable file is already there!%b\n"
+        printf "%b\nExecutable file is already there!%b\n"
     fi
 
 }
 
-function change_directory() {
+function wfx_change_directory() {
 
     # Change to /tmp so the downloaded file will be automatically deleted after restart or shutdown
     printf "\nEntering /tmp...%b\n"
@@ -463,10 +465,10 @@ function change_directory() {
 
 }
 
-change_directory
-get_local_version_wfx
-get_available_version_wfx
-get_the_drowned_fox
-extract_it
-create_desktop_file_wfx
-symbolic_wfx
+wfx_change_directory
+wfx_check_local_version
+wfx_check_available_version
+wfx_get_the_drowned_fox
+wfx_extract_it
+wfx_create_desktop_file
+wfx_create_symbolic_link
