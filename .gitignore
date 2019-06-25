@@ -1,6 +1,6 @@
 old.*
 old/*
 new/*
--new.*
+*-new.*
 references/*
 *.backup
