@@ -12,6 +12,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 #set -o xtrace
+## Variables ##
 readonly wfxpage="https://www.waterfox.net/releases/" # The url of the download page
 readonly wfxurl=$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | \grep --max-count=1 ".bz2") # Get the URL from the releases page
 readonly wfxfile=$(printf "%s" "${wfxurl}" | \awk --field-separator "/" '{print $7}' | \tr --delete "\n") # Get the file name from the URL
