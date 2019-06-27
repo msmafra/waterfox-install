@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Waterfox Uninstallation for Production version
+# Waterfox Uninstallation for Development version
 # Version 0.8.8
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
@@ -13,9 +13,9 @@ set -o pipefail
 #set -o xtrace
 ## Variables ##
 readonly wfxdest="/usr/lib64/"
-readonly wfxexec="/usr/bin/waterfox"
-readonly wfxdesktop="/usr/share/applications/waterfox.desktop"
-readonly wfxpath="/usr/lib64/waterfox"
+readonly wfxexec="/usr/bin/waterfox-alpha"
+readonly wfxdesktop="/usr/share/applications/waterfox-alpha.desktop"
+readonly wfxpath="/usr/lib64/waterfox-alpha"
 readonly whoisit=$(\whoami | \awk '{print $1}' | \tr -d "\n")
 readonly rstall="\e[0m"
 readonly rstbold="\e[21m"
