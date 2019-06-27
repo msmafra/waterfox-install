@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Waterfox Uninstallation Script for the former to be waterfox-install.sh (/usr/lib64/)
+# Waterfox Uninstallation for Production version
 # Version 0.8.8
 #
 # Author: Marcelo dos Santos Mafra
