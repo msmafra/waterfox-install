@@ -40,8 +40,8 @@ And then run it:
 
 ### Uninstalling it
 
-There is also a separated uninstallation file for the 0.x installation because of its place of installation /usr/lib64/. It will probably change on the next version to /opt/.
-Will be integrated in the final version.
+There is also a separated uninstallation file for the 0.x installation because of its place of installation /usr/lib64/. It will probably change on the next version to /opt/. Will be integrated in the final version.
+Obsd.: Your profile(s) will not be deleted. They are located in ~/.mozilla/waterfox/
 
 Run using bash:
 
