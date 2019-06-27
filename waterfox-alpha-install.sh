@@ -4,7 +4,6 @@
 # Just install. SORRY!
 # Uninstallation file is separated.
 # Version 0.8.8
-#
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
