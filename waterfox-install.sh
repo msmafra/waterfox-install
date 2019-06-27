@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 #
-# Waterfox Installation Script (just install. SORRY!). Now there is a uninstallation file.
-# Version 0.8.7
+# Waterfox Installation Script for the Production version.
+# Just install. SORRY!
+# Uninstallation file is separated.
+# Version 0.8.8
 #
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
