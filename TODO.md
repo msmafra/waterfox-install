@@ -1,6 +1,6 @@
 - [X] \(Optional) Improve README.md;
 - [X] Create function to get the correct url of the latest **Waterfox** version. Automate it in the script;
-- [ ] \(Optional) Beautify the scripts files;
+- [X] \(Optional) Beautify the scripts files;
 - [X] Decide what to do with the *getWFXVersion* and *getLocalWFXVersion* functions. Gone!;
 - [ ] **pgrep** to check if there is a waterfox process is running;
 - [ ] Apply **Bash** best practices to the script. Trying to;
@@ -9,7 +9,8 @@
 - [ ] Uninstall method. Remove profile also??;
 - [ ] Chosing between development (alpha/beta/rc) and production. Set a different dir for development;
 - [ ] Choice of dir: **/opt/**, **/usr/lib64/** or **${HOME}/waterfox/** (probably only on SilverBlue). I will amost certain to set it to **/opt/** as default. Or set **/opt/** as default for sudo and **${HOME}/waterfox/** for non sudo installs;
-- [ ] Cleaning up after Installation. Probably not necessary since it is using **/tmp/** as the place to store the files;
+- [x] Cleaning up after Installation. Probably not necessary since it is using **/tmp/** as the place to store the files;
+	- [ ] Message the user that it is there;
 - [ ] Give choice to keep the download file. Copying it from **/tmp/** to **~/Downloads/**;
 - [ ] \(Optional) Give the ability to choose between **cURL** or **Wget**;
 - [ ] Check the existence of **cURL** or **Wget** and set one of them to handle the variables and functions;
@@ -18,14 +19,15 @@
 https://raw.githubusercontent.com/msmafra/waterfox-install/master/waterfox.desktop;
 - [ ] Check beforehand the existance of the programs needed for the script to run;
 - [ ] Create an waterfox Bash file to be used on **/usr/bin/** (or elsewhere). Separated from the script on embeded;
-- [ ] Install the script as a system install, update or uninstall helper for **Waterfox**;
+- [ ] \(Consider) Install the script as a system install, update or uninstall helper for **Waterfox**;
 - [ ] \(Consider) Check the files' and downloaded ones' checksum (??);
 - [ ] Do not forget to update the **README.MD** file with the new information;
 - [ ] Using a **main()** function???;
 - [ ] \(Consider) Transform most of the variables with subshell, commands etc into functions;
 - [ ] \(Consider) Use t _ or __ before function names (????). Best practices (??);
 - [ ] User **shift** on functions that acept parameters;
-- [ ] Lowercase variables names on 0.x versions;
-- [ ] Merge waterfox.desktop with the waterfox.desktop for KDE also from AUR. Set version to 1.1;  
+- [x] Lowercase variables names on 0.x versions;
+- [x] Merge waterfox.desktop with the waterfox.desktop for KDE also from AUR. Set version to 1.1;  
 https://raw.githubusercontent.com/hawkeye116477/waterfox-deb/master/waterfox-kde/waterfox.desktop
 - [ ] \(Consider) On the uninstallation script instead of using **rm** to remove the files use **mv** to move the files and folders to **/tmp/waterfox-uninstallation**, so everything will be removed on restart or shutdown. Alert the user;
+- [ ] \(Consider) Colorize outputed messages;
