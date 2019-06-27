@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 #
 # Waterfox Installation Script (just install. SORRY!). Now there is a uninstallation file.
-# Version 0.8.5
+# Version 0.8.7
 #
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
 #
-#
 set -o errexit
+set -o errtrace
 set -o nounset
 set -o pipefail
 #set -o xtrace
@@ -21,8 +21,8 @@ readonly wfxexec="/usr/bin/waterfox" # Symbolic link to main executable
 readonly wfxdesktop="/usr/share/applications/waterfox.desktop" # Desktop entry file
 readonly wfxbinpath="/usr/lib64/waterfox/waterfox" # Main executable
 readonly wfxiconpath="/usr/lib64/waterfox/browser/chrome/icons/default/default256.png" # Desktop entry default icon. Available: default16.png  default22.png  default24.png  default256.png  default32.png  default48.png
-readonly tmpdir="/tmp/" # Change to tmp to automatically remove file or folders
-readonly places="/usr/bin/ /usr/local/bin/"
+readonly tmpdir="/tmp/" # Change to /tmp/ to automatically remove file or folders
+readonly places="/usr/bin/ /usr/local/bin/" # places to the whereis search
 readonly wfxtries=5
 readonly wfxtimeout=10
 readonly wfxwait=5
@@ -465,7 +465,7 @@ function wfx_change_directory() {
     cd "${tmpdir}" && \pwd
 
 }
-
+## Calls ##
 wfx_change_directory
 wfx_check_local_version
 wfx_check_available_version
