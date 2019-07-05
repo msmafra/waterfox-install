@@ -14,7 +14,7 @@
 - [ ] Give choice to keep the download file. Copying it from **/tmp/** to **~/Downloads/**;
 - [ ] \(Optional) Give the ability to choose between **cURL** or **Wget**;
 - [ ] Check the existence of **cURL** or **Wget** and set one of them to handle the variables and functions;
-- [ ] Use the backslash (\\) before executables to avoid aliases;
+- [x] Use the backslash (\\) before executables to avoid aliases;
 - [ ] \(Optional) Remove waterfox.desktop creation from inside the script and set it to be downloaded from  
 https://raw.githubusercontent.com/msmafra/waterfox-install/master/waterfox.desktop;
 - [ ] Check beforehand the existance of the programs needed for the script to run;
