@@ -169,10 +169,10 @@ Comment[vi]=Để duyệt các trang web
 Comment[zh_CN]=浏览互联网
 Comment[zh_TW]=瀏覽網際網路
 Exec=waterfox-alpha %u
-TryExec=$WFXBINPATH
+TryExec=$wfxbinpath
 Terminal=false
 Type=Application
-Icon=$WFXICONPATH
+Icon=$wfxiconpath
 Categories=Network;WebBrowser;
 MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
 StartupNotify=true
@@ -440,7 +440,7 @@ Name[zh_TW]=新增隱私視窗
 Exec=waterfox-alpha -private-window
 WFOXALPHA
     else
-        printf "\n The waterfox.desktop file already exists!%b\n"
+        printf "\n The waterfox-alpha.desktop file already exists!%b\n"
     fi
 
 }
