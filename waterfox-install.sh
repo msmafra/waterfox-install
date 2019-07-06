@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 #
-# Waterfox Installation Script for the Production version.
+# Waterfox Installation Script for the Production version
 # Just install. SORRY!
-# Uninstallation file is separated.
-# Version 0.8.8
-#
+# Uninstallation file is separated
+# Version 0.9.1
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
@@ -24,7 +23,6 @@ readonly wfxdesktop="/usr/share/applications/waterfox.desktop" # Desktop entry f
 readonly wfxbinpath="/usr/lib64/waterfox/waterfox" # Main executable
 readonly wfxiconpath="/usr/lib64/waterfox/browser/chrome/icons/default/default256.png" # Desktop entry default icon. Available: default16.png  default22.png  default24.png  default256.png  default32.png  default48.png
 readonly tmpdir="/tmp/" # Change to /tmp/ to automatically remove file or folders
-readonly places="/usr/bin/ /usr/local/bin/" # places to the whereis search
 readonly wfxtries=5
 readonly wfxtimeout=10
 readonly wfxwait=5
@@ -43,8 +41,7 @@ function wfx_check_local_version() {
     # Obtains the local installed version if there is one
     local wfxwhere=$( [[ -f "${wfxexec}" ]] && printf true || printf "" )
 
-    if [[ "${wfxwhere}" ]]
-    then
+    if [[ "${wfxwhere}" ]];then
         local wfxlver=$( "${wfxbinpath}" --version | \awk --field-separator '[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | \awk --field-separator "." '{printf "%s.%s.%s", $1,$2,$3}' )
         printf "%s" "${wfxlver}"
     else
@@ -58,8 +55,7 @@ function wfx_get_the_drowned_fox() {
 
     # Downloads the .tar.bz2 file. Firstly, checks if file exists remotely. If file is not there or yet available to download (happened on version 56.2.10 release) exits
     local wfxfcheck=$( \wget --spider --show-progress --quiet --server-response "${wfxurl}" 2>&1 | \head --lines=1 | \awk 'NR==1{print $2}' )
-    if [[ ! "${wfxfcheck}" = "200" ]]
-    then
+    if [[ ! "${wfxfcheck}" = "200" ]];then
         printf "%b\nNo file is available for downloading! Or some other error. Leaving...%b\n"
         exit 1
     else
@@ -74,19 +70,16 @@ function wfx_extract_it() {
 
     # Extract the .tar.bz2 file to /usr/lib64/ creating the subfolder named waterfox
     printf "%b\nExtracting: %s%b\n" "${wfxfile}"
-    \tar --list --verbose --file "${wfxfile}" --directory="${wfxdest}"
-    #\tar --extract --verbose --file "${wfxfile}" --directory="${wfxdest}"
+    \tar --extract --verbose --file "${wfxfile}" --directory="${wfxdest}"
 
 }
 
 function wfx_create_desktop_file() {
 
     # Creates the waterfox.desktop file to be accessed system wide. If there is nothing already there, create one
-    if [[ ! -f "${wfxdesktop}" ]]
-    then
+    if [[ ! -f "${wfxdesktop}" ]];then
         printf "\nCreating the waterfox.desktop file...%b\n"
-        # waterfox.desktop is taken from AUR : waterfox-bin.git https://aur.archlinux.org/cgit/aur.git/plain/waterfox.desktop?h=waterfox-bin
-        \tee --ignore-interrupts "${wfxdesktop}" <<WFOX
+        \tee --ignore-interrupts "${wfxdesktop}" <<'WFOX'
 [Desktop Entry]
 Name=Waterfox
 GenericName=Web Browser
@@ -450,8 +443,7 @@ WFOX
 function wfx_create_symbolic_link() {
 
     # Creates the symbolic for the main executable on /usr/bin
-    if [[ ! -f "${wfxexec}" ]]
-    then
+    if [[ ! -f "${wfxexec}" ]];then
         printf "\nCreating the symbolic link...%b\n"
         \ln --symbolic --verbose --force "${wfxbinpath}" "${wfxexec}"
     else
@@ -463,7 +455,7 @@ function wfx_create_symbolic_link() {
 function wfx_change_directory() {
 
     # Change to /tmp so the downloaded file will be automatically deleted after restart or shutdown
-    printf "\nEntering /tmp...%b\n"
+    printf "\nEntering ${tmpdir}...%b\n"
     cd "${tmpdir}" && \pwd
 
 }

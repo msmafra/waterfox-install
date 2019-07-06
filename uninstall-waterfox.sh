@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# Waterfox Uninstallation for Production version
-# Version 0.8.8
+# Waterfox uninstallation for the production one
+# Version 0.9.1
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
@@ -16,7 +16,7 @@ readonly wfxdest="/usr/lib64/"
 readonly wfxexec="/usr/bin/waterfox"
 readonly wfxdesktop="/usr/share/applications/waterfox.desktop"
 readonly wfxpath="/usr/lib64/waterfox"
-readonly whoisit=$(\whoami | \awk '{print $1}' | \tr -d "\n")
+readonly whoisit=$(\id --user --name | \awk --sandbox '{print $1}' | \tr --delete "\n")
 readonly rstall="\e[0m"
 readonly rstbold="\e[21m"
 readonly bold="\e[1m"
@@ -25,7 +25,11 @@ readonly grn="\e[32m"
 readonly blu="\e[34m"
 readonly yel="\e[93m"
 ## Functions ##
-function my_name() {
+function exit_stage_left {
+    printf "So exit, Stage Left! $?"
+}
+trap exit_stage_left EXIT ERR # Elegant exit
+function say_my_name() {
     is_earl=$(basename "${0}")
     # Or not
     printf "${is_earl}"
@@ -33,10 +37,10 @@ function my_name() {
 
 function wfx_uninstallation( ) {
 
-    local this_script="$(my_name)"
+    local this_script="$(say_my_name)"
     if [[ "${whoisit}" = "root" ]];then
 
-        printf "${bold}-- %s --${rstall}\n" "Script To Uninstall Waterfox From /usr/lib64/"
+        printf "${bold}-- %s --${rstall}\n" "Script To Uninstall Waterfox From ${wfxdest}"
 
         printf "${yel}Removing files from ${bold}%s${rstall}\n" "${wfxpath}"
         if [[ -d "${wfxpath}" ]];then
@@ -65,7 +69,7 @@ function wfx_uninstallation( ) {
 
     else
 
-        printf "Run me as root \n sudo ./%s %b\n" "${this_script}"
+        printf "Run with super user priviledges \n sudo ./%s %b\n" "${this_script}"
         exit 1
 
     fi
