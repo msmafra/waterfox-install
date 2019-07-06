@@ -31,7 +31,7 @@ function my_name() {
     printf "${is_earl}"
 }
 
-function wfx_uninstallation( ){
+function wfx_uninstallation( ) {
 
     local this_script="$(my_name)"
     if [[ "${whoisit}" = "root" ]];then
