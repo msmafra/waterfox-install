@@ -31,3 +31,5 @@ https://raw.githubusercontent.com/msmafra/waterfox-install/master/waterfox.deskt
 https://raw.githubusercontent.com/hawkeye116477/waterfox-deb/master/waterfox-kde/waterfox.desktop
 - [ ] \(Consider) On the uninstallation script instead of using **rm** to remove the files use **mv** to move the files and folders to **/tmp/waterfox-uninstallation**, so everything will be removed on restart or shutdown. Alert the user;
 - [ ] \(Consider) Colorize outputed messages;
+- [ ] Open Waterfox after install;
+- [ ] \(Consider) adding another "utilities" to the script: Open with Profile Manager, Quick version check;
