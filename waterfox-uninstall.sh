@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Waterfox uninstallation for the production one
-# Version 0.9.1
+# Version 0.9.2
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>

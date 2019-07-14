@@ -65,7 +65,7 @@ function wfx_uninstallation( ) {
             exit 1
         fi
 
-        printf "${grn}%s\n" "Leaving..."
+        printf "${grn}%s\n" "Leaving...${rstall}"
 
     else
 

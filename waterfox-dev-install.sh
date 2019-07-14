@@ -3,7 +3,7 @@
 # Waterfox Installation Script for the Development version.
 # Just install. SORRY!
 # Uninstallation file is separated.
-# Version 0.9.1
+# Version 0.9.5
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
@@ -14,15 +14,25 @@ set -o nounset
 set -o pipefail
 #set -o xtrace
 ## Variables ##
-readonly wfxpage="https://www.waterfox.net/releases/" # The url of the download page
-readonly wfxurl=$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | grep "/aurora" | \grep --max-count=1 ".bz2") # Get the URL from the releases page
-readonly wfxfile=$(printf "%s" "${wfxurl}" | \awk --field-separator "/" '{print $7}' | \tr --delete "\n") # Get the file name from the URL
-readonly wfxdest="/usr/lib64/" # Install destination
-readonly wfxexec="/usr/bin/waterfox-dev" # Symbolic link to main executable
-readonly wfxdesktop="/usr/share/applications/waterfox-dev.desktop" # Desktop entry file
-readonly wfxbinpath="/usr/lib64/waterfox-dev/waterfox" # Main executable
-readonly wfxiconpath="/usr/lib64/waterfox-dev/browser/chrome/icons/default/default256.png" # Desktop entry default icon. Available: default16.png  default22.png  default24.png  default256.png  default32.png  default48.png
-readonly tmpdir="/tmp/" # Change to tmp to automatically remove file or folders
+# The url of the download page
+readonly wfxpage="https://www.waterfox.net/releases/"
+# Get the URL from the releases page
+readonly wfxurl=$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | grep "/aurora" | \grep --max-count=1 ".bz2")
+# Get the file name from the URL
+readonly wfxfile=$(printf "%s" "${wfxurl}" | \awk --field-separator "/" '{print $7}' | \tr --delete "\n")
+# Install destination
+readonly wfxdest="/usr/lib64/waterfox-dev/"
+# Symbolic link to main executable
+readonly wfxexec="/usr/bin/waterfox-dev"
+# Desktop entry file
+readonly wfxdesktop="/usr/share/applications/waterfox-dev.desktop"
+# Main executable
+readonly wfxbinpath="/usr/lib64/waterfox-dev/waterfox"
+# Desktop entry default icon. Available: default16.png  default22.png  default24.png  default256.png  default32.png  default48.png
+readonly wfxiconpath="/usr/lib64/waterfox-dev/browser/chrome/icons/default/default128.png"
+# Change to tmp to automatically remove file or folders
+readonly tmpdir="/tmp/"
+# Defaults ot wget or curl
 readonly wfxtries=5
 readonly wfxtimeout=10
 readonly wfxwait=5
@@ -31,9 +41,8 @@ readonly wfxwaitretry=15
 function wfx_check_available_version() {
 
     # Gets the development version of Waterfox from waterfox.net
-    local wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "%b\nAvailable Waterfox version %s.%s.%s\n", $1,$2,$3}')"
+    local wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | grep "/aurora" | \sort --unique | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "%s.%s.%s", $1,$2,$3}' | \grep --perl-regex --only-matching '.*(?=\.)')"
     printf "%s" "${wfxver}"
-
 }
 
 function wfx_check_local_version() {
@@ -42,11 +51,11 @@ function wfx_check_local_version() {
     local wfxwhere=$( [[ -f "${wfxexec}" ]] && printf true || printf "" )
 
     if [[ "${wfxwhere}" ]];then
-        local wfxlver=$( "${wfxbinpath}" --version | \awk --field-separator '[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' | \awk --field-separator "." '{printf "%s.%s.%s", $1,$2,$3}' )
+        local wfxlver=$( "${wfxbinpath}" --version | \grep -F "Mozilla Waterfox " | \awk '{printf "%s", $3}' )
         printf "%s" "${wfxlver}"
     else
-        local message="No installed version found in %s ${wfxdest}%b\n"
-        printf "${message}"
+        local message="No installed version found in %s ${wfxdest}\n"
+        printf "%s" "${message}"
     fi
 
 }
@@ -56,11 +65,11 @@ function wfx_get_the_drowned_fox() {
     # Downloads the .tar.bz2 file. Firstly, checks if file exists remotely. If file is not there or yet available to download (happened on version 56.2.10 release) exits
     local wfxfcheck=$( \wget --spider --show-progress --quiet --server-response "${wfxurl}" 2>&1 | \head --lines=1 | \awk 'NR==1{print $2}' )
     if [[ ! "${wfxfcheck}" = "200" ]];then
-        printf "%b\nNo file is available for downloading! Or some other error. Leaving...%b\n"
+        printf "\nNo file is available for downloading! Or some other error. Leaving...\n"
         exit 1
     else
         # If the file is there, it starts the download
-        printf "%b\nStarting the download...%b\n"
+        printf "\nStarting the download...\n"
         \wget --show-progress --tries="${wfxtries}" --timeout="${wfxtimeout}" --wait="${wfxwait}" --waitretry="${wfxwaitretry}" --continue "${wfxurl}"
     fi
 
@@ -68,9 +77,28 @@ function wfx_get_the_drowned_fox() {
 
 function wfx_extract_it() {
 
-    # Extract the .tar.bz2 file to /usr/lib64/ creating the subfolder named waterfox
-    printf "%b\nExtracting: %s%b\n" "${wfxfile}"
-    \tar --extract --verbose --file "${wfxfile}" --directory="${wfxdest}"
+    # Extracts the .tar.bz2 file to /tmp/ creating the subfolder named waterfox.
+    # Renames to waterfox-dev
+    # Next copies the resulting folder to /usr/lib64/
+    if [[ ! -d "${tmpdir}waterfox/" ]];then
+        printf "\nExtracting: %s" "${wfxfile}"
+        \tar --extract --verbose --file "${wfxfile}" --directory="${tmpdir}"
+    else
+        printf "\nDeleting: %s" "${tmpdir}waterfox/"
+        \rm --recursive --force "${tmpdir}waterfox/"
+        printf "\nExtracting: %s to %s" "${wfxfile}" "${tmpdir}"
+        \tar --extract --verbose --file "${wfxfile}" --directory="${tmpdir}"
+    fi
+
+    if [[ ! -d "${tmpdir}waterfox-dev/" ]];then
+        printf "\nRenaming %s to %s" "${tmpdir}waterfox/" "${tmpdir}waterfox-dev/"
+        \mv --force --update --verbose "${tmpdir}waterfox/" "${tmpdir}waterfox-dev/"
+    else
+        \rm --recursive --force "${tmpdir}waterfox-dev/"
+        \mv --force --update --verbose "${tmpdir}waterfox/" "${tmpdir}waterfox-dev/"
+    fi
+    printf "\nCopying %s to %s" "${tmpdir}waterfox-dev/" "${wfxdest}"
+    \cp --recursive --force --update --verbose "${tmpdir}waterfox-dev/" "${wfxdest}"
 
 }
 
@@ -78,8 +106,8 @@ function wfx_create_desktop_file() {
 
     # Creates the waterfox-dev.desktop file to be accessed system wide. If there is nothing already there, create one
     if [[ ! -f "${wfxdesktop}" ]];then
-        printf "\nCreating the waterfox-dev.desktop file...%b\n"
-        \tee --ignore-interrupts "${wfxdesktop}" <<'WFOX'
+        printf "\nCreating the waterfox-dev.desktop file...\n"
+        \tee --ignore-interrupts "${wfxdesktop}" <<WFOX
 [Desktop Entry]
 Name=Waterfox Dev
 GenericName=Web Browser
@@ -435,7 +463,7 @@ Name[zh_TW]=新增隱私視窗
 Exec=waterfox-dev -private-window
 WFOX
     else
-        printf "\n The waterfox-dev.desktop file already exists!%b\n"
+        printf "\n The waterfox-dev.desktop file already exists!\n"
     fi
 
 }
@@ -444,10 +472,10 @@ function wfx_create_symbolic_link() {
 
     # Creates the symbolic for the main executable on /usr/bin
     if [[ ! -f "${wfxexec}" ]];then
-        printf "\nCreating the symbolic link...%b\n"
+        printf "\nCreating the symbolic link...\n"
         \ln --symbolic --verbose --force "${wfxbinpath}" "${wfxexec}"
     else
-        printf "%b\nExecutable file is already there!%b\n"
+        printf "\nExecutable file is already there!\n"
     fi
 
 }
@@ -455,7 +483,7 @@ function wfx_create_symbolic_link() {
 function wfx_change_directory() {
 
     # Change to /tmp so the downloaded file will be automatically deleted after restart or shutdown
-    printf "\nEntering ${tmpdir}...%b\n"
+    printf "\nEntering ${tmpdir}...\n"
     cd "${tmpdir}" && \pwd
 
 }
@@ -467,3 +495,4 @@ wfx_get_the_drowned_fox
 wfx_extract_it
 wfx_create_desktop_file
 wfx_create_symbolic_link
+printf "%s\n" "Installation process finished."

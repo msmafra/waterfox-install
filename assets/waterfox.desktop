@@ -1,5 +1,6 @@
 [Desktop Entry]
-Name=Waterfox Dev
+Version=1.0
+Name=Waterfox
 GenericName=Web Browser
 GenericName[ar]=متصفح ويب
 GenericName[ast]=Restolador Web
@@ -81,14 +82,16 @@ Comment[uk]=Перегляд сторінок Інтернету
 Comment[vi]=Để duyệt các trang web
 Comment[zh_CN]=浏览互联网
 Comment[zh_TW]=瀏覽網際網路
-Exec=waterfox-dev %u
-TryExec=/usr/lib64/waterfox-dev/waterfox
+Exec=waterfox %u
+TryExec=/usr/lib64/waterfox/waterfox
 Terminal=false
 Type=Application
-Icon=/usr/lib64/waterfox-dev/browser/chrome/icons/default/default128.png
+Icon=/usr/lib64/waterfox/browser/chrome/icons/default/default256.png
 Categories=Network;WebBrowser;
 MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
 StartupNotify=true
+X-MuiltpleArgs=false
+StartupWMClass=Waterfox
 Actions=NewTab;NewWindow;NewPrivateWindow;
 
 [Desktop Action NewTab]
@@ -176,7 +179,7 @@ Name[vi]=Mở thẻ mới
 Name[xh]=Vula ithebhu entsha
 Name[zh_CN]=打开新标签页
 Name[zh_TW]=開啟新分頁
-Exec=waterfox-dev -new-tab about:newtab
+Exec=waterfox -new-tab about:newtab
 
 [Desktop Action NewWindow]
 Name=Open new window
@@ -263,7 +266,7 @@ Name[vi]=Mở cửa sổ mới
 Name[xh]=Vula iwindow entsha
 Name[zh_CN]=打开新窗口
 Name[zh_TW]=開啟新視窗
-Exec=waterfox-dev -new-window
+Exec=waterfox -new-window
 
 [Desktop Action NewPrivateWindow]
 Name=New private window
@@ -350,4 +353,4 @@ Name[vi]=Cửa sổ riêng tư mới
 Name[xh]=Ifestile yangasese entsha
 Name[zh_CN]=新建隐私浏览窗口
 Name[zh_TW]=新增隱私視窗
-Exec=waterfox-dev -private-window
+Exec=waterfox -private-window
