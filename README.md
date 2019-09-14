@@ -51,4 +51,4 @@ Run using bash:
 
 or
 
-	chmod +x ./uninstall-waterfox.sh && sudo ./uninstall-waterfox.sh`
+	chmod +x ./uninstall-waterfox.sh && sudo ./uninstall-waterfox.sh
