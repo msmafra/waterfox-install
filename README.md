@@ -1,7 +1,7 @@
-# Waterfox Download and Installation Script For Linux
-###### Not an official one, mind you
+# Waterfox Install For Linux
+###### Not an official one, mind you :)
 
-Waterfox download and installation script.
+Waterfox install script for Linux will download and extract the tarball file, create a symbolic link to the bin file and create a dot desktop file.
 Tested on [Fedora](https://getfedora.org/), [POP!_OS](https://system76.com/pop), [openSUSE](https://www.opensuse.org/), [Manjaro](https://manjaro.org) and of course [Arch Linux](https://www.archlinux.org/) 64bit versions.
 
 ### Some References
@@ -51,4 +51,4 @@ Run using bash:
 
 or
 
-	chmod +x ./uninstall-waterfox.sh && sudo ./uninstall-waterfox.sh` 
+	chmod +x ./uninstall-waterfox.sh && sudo ./uninstall-waterfox.sh`
