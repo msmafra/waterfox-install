@@ -1,7 +1,7 @@
-# Waterfox Download and Installation Script For Linux
-###### Not an official one, mind you
+# Waterfox Install For Linux
+###### Not an official one, mind you :)
 
-Waterfox download and installation script.
+Waterfox install script for Linux will download and extract the tarball file, create a symbolic link to the bin file and create a dot desktop file.
 Tested on [Fedora](https://getfedora.org/), [POP!_OS](https://system76.com/pop), [openSUSE](https://www.opensuse.org/), [Manjaro](https://manjaro.org) and of course [Arch Linux](https://www.archlinux.org/) 64bit versions.
 
 ### Some References
@@ -53,7 +53,7 @@ And then run it:
 
 ### Uninstalling it
 
-There is also a separated uninstallation file for the 0.x installation because of its place of installation /usr/lib64/. It will probably change on the next version to /opt/. Will be integrated in the final version.
+There is also a separated uninstallation file for the 0.x installation because of its place of installation /usr/lib64/. It will probably change in the next version to /opt/. Will be integrated into the final version.
 Your profile(s) will not be deleted. They are stored at ~/.mozilla/waterfox/
 
 Run using bash:
@@ -68,6 +68,3 @@ And then run it:
 
     sudo ./uninstall-waterfox.sh
 
-## Newer Versions Of Waterfox
-
-The script was pointing to the previous download page https://waterfoxproject.org/en-US/waterfox/new/?scene=1, which is not updated anymore. Actually https://waterfoxproject.org/ is now redirected to https://www.waterfox.net/. The new download page has now all OSes and also the possiblity to download the testing and production versions. The ability to choose between production and development version is not implemented in the current version 0.x but will be in 1.0.
