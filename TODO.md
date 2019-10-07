@@ -33,3 +33,5 @@ https://raw.githubusercontent.com/hawkeye116477/waterfox-deb/master/waterfox-kde
 - [ ] \(Consider) Colorize outputed messages;
 - [ ] Open Waterfox after install;
 - [ ] \(Consider) adding another "utilities" to the script: Open with Profile Manager, Quick version check;
+- [ ] \(Consider) adding a backup profile option before install ou uninstall;
+- [ ] Add a disclaimer and/or DISCLAIMER.md file;

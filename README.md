@@ -1,5 +1,5 @@
 # Waterfox Install For Linux
-###### Not an official one, mind you :)
+###### Not an official one. So please mind you to use at your own risk :)
 
 Waterfox install script for Linux will download and extract the tarball file, create a symbolic link to the bin file and create a dot desktop file.
 Tested on [Fedora](https://getfedora.org/), [POP!_OS](https://system76.com/pop), [openSUSE](https://www.opensuse.org/), [Manjaro](https://manjaro.org) and of course [Arch Linux](https://www.archlinux.org/) 64bit versions.
@@ -16,22 +16,22 @@ Tested on [Fedora](https://getfedora.org/), [POP!_OS](https://system76.com/pop),
 ### Some Information
 The installation script will, download waterfox-xx.xx.xx.en-US.linux-x86_64.tar.bz2 and extract it to **/usr/lib64/**, create a symbolic link in **/usr/bin/**, create a [desktop entry](https://specifications.freedesktop.org/desktop-entry-spec/latest/index.html) file (waterfox.desktop) on **/usr/share/applications/**. And there is no uninstallation yet.
 
-### Getting it
+### Getting the script
 **You can clone the repo:**
 
 	git clone https://github.com/msmafra/waterfox-install.git
 
-Or just download **waterfox-install.sh** file to your machine from you browser [raw file](https://raw.githubusercontent.com/msmafra/waterfox-install/Dev/waterfox-install.sh) or:
+Or just download **waterfox-install.sh** file to your machine from you browser [raw file](https://raw.githubusercontent.com/msmafra/waterfox-install/master/waterfox-install.sh) or:
 
-**Download it with cURL or Wget:**
+**Download the script with cURL or Wget:**
 
-    curl --continue-at - https://raw.githubusercontent.com/msmafra/waterfox-install/Dev/waterfox-install.sh
+    curl -O -C - https://raw.githubusercontent.com/msmafra/waterfox-install/master/waterfox-install.sh
 
    or
 
-    wget --continue https://raw.githubusercontent.com/msmafra/waterfox-install/Dev/waterfox-install.sh
+    wget -c https://raw.githubusercontent.com/msmafra/waterfox-install/master/waterfox-install.sh
 
-### Using it
+### Using the script
 **Run using bash:**
 
 	sudo bash ./waterfox-install.sh
@@ -40,15 +40,23 @@ or
 
 	chmod +x ./waterfox-install.sh && sudo ./waterfox-install.sh
 
-### Uninstalling it
+### Uninstalling Waterfox
 
-There is a separated uninstallation file for the 0.x.x installation because of its place of installation that I chose **/usr/lib64/**. It will probably change on the next version to **/opt/**. Will be integrated in the final version.
+There is a separated uninstallation file for the 0.x.x installation because of its place of installation that I chose **/usr/lib64/**. It will probably change on the next version to **/opt/**. Uninstallation will be integrated in the final version.
 Your profile(s) will not be deleted. They are stored at **~/.mozilla/waterfox/**
+
+**Download the script with cURL or Wget:**
+
+    curl -O -C - https://raw.githubusercontent.com/msmafra/waterfox-install/master/waterfox-uninstall.sh
+
+   or
+
+    wget -c https://raw.githubusercontent.com/msmafra/waterfox-install/master/waterfox-uninstall.sh
 
 Run using bash:
 
-	sudo bash ./uninstall-waterfox.sh
+	sudo bash ./waterfox-uninstall.sh
 
 or
 
-	chmod +x ./uninstall-waterfox.sh && sudo ./uninstall-waterfox.sh
+	chmod +x ./waterfox-uninstall.sh && sudo ./waterfox-uninstall.sh
