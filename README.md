@@ -15,13 +15,13 @@ Tested on [Fedora](https://getfedora.org/), [POP!_OS](https://system76.com/pop),
 ### Some Information
 The installation script will, download waterfox-xx.xx.xx.en-US.linux-x86_64.tar.bz2 and extract it to /usr/lib64/, create a symbolic link in /usr/bin/, create a [desktop entry](https://specifications.freedesktop.org/desktop-entry-spec/latest/index.html) file (waterfox.desktp) on /usr/share/applications/. And there is no uninstallation yet.
 
-## Using it
-### Getting it
+## Using the script
+### Getting the script
 You can clone the repo:
 `git clone https://github.com/msmafra/waterfox-install.git`
 Or just download [waterfox-install.sh](https://raw.githubusercontent.com/msmafra/waterfox-install/master/waterfox-install.sh) file to your machine.
 
-### Installing it
+### Installing Waterfox
 
 
 Run using bash:
@@ -38,7 +38,7 @@ And then run it:
 
 
 
-### Uninstalling it
+### Uninstalling Waterfox
 
 There is also a separated uninstallation file for the 0.x installation because of its place of installation /usr/lib64/. It will probably change on the next version to /opt/. Will be integrated in the final version.
 Your profile(s) will not be deleted. They are located in ~/.mozilla/waterfox/
