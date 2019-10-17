@@ -36,7 +36,7 @@ function say_my_name() {
     printf "%s" "${is_earl}"
 }
 
-function wfx_uninstallation( ) {
+function wfx_uninstallation() {
 
     local this_script
     this_script="$(say_my_name)"
