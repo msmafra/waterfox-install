@@ -18,33 +18,34 @@ readonly wfxdesktop="/usr/share/applications/waterfox-dev.desktop"
 readonly wfxpath="/usr/lib64/waterfox-dev"
 readonly whoisit=$(\id --user --name | \awk --sandbox '{print $1}' | \tr --delete "\n")
 readonly rstall="\e[0m"
-readonly rstbold="\e[21m"
+# readonly rstbold="\e[21m"
 readonly bold="\e[1m"
-readonly red="\e[31m"
+# readonly red="\e[31m"
 readonly grn="\e[32m"
-readonly blu="\e[34m"
+# readonly blu="\e[34m"
 readonly yel="\e[93m"
 ## Functions ##
 function exit_stage_left {
-    printf "So exit, Stage Left! $?"
+    printf "So exit, Stage Left! %s" "$?"
 }
 trap exit_stage_left EXIT ERR # Elegant exit
 function say_my_name() {
     is_earl=$(basename "${0}")
     # Or not
-    printf "${is_earl}"
+    printf "%s" "${is_earl}"
 }
 
 function wfx_uninstallation( ) {
 
-    local this_script="$(say_my_name)"
+    local this_script
+    this_script="$(say_my_name)"
     if [[ "${whoisit}" = "root" ]];then
 
         printf "${bold}-- %s --${rstall}\n" "Script To Uninstall Waterfox From ${wfxdest}"
 
         printf "${yel}Removing files from ${bold}%s${rstall}\n" "${wfxpath}"
         if [[ -d "${wfxpath}" ]];then
-            \rm --verbose --recursive --force "${wfxpath}"/*
+            \rm --verbose --recursive --force "${wfxpath:?}"/*
         fi
 
         printf "${yel}Deleting ${bold}%s${rstall}\n" "${wfxdesktop}"
@@ -69,7 +70,7 @@ function wfx_uninstallation( ) {
 
     else
 
-        printf "Run with super user priviledges \n sudo ./%s %b\n" "${this_script}"
+        printf "Run with super user priviledges \n sudo ./%s\n" "${this_script}"
         exit 1
 
     fi
