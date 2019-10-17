@@ -1,9 +1,11 @@
 old.*
+*.old
 old/*
 new/*
+*-new-*
 *-new.*
 references/*
 *.backup
+*.bkp
 *.bak
 *.bk
-*.bkp
