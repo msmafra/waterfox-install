@@ -34,10 +34,12 @@ function exit_stage_left() {
 
 function err_msg() {
     local the_message
+    local the_time_stamp
     # Prints error messages
     the_message="${1}"; shift
+    the_time_stamp="$(date +'%Y-%m-%dT%H:%M:%S%z')"
     # printf "%s [$(date +'%Y-%m-%dT%H:%M:%S%z')]: ${@}" >&2
-    printf "%s [$(date +'%Y-%m-%dT%H:%M:%S%z')]:" "${@}"
+    printf "%s [${the_time_stamp}]:" "${@}"
 }
 
 function check_sudo() {
