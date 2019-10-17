@@ -3,7 +3,7 @@
 # Waterfox Installation Script for the Production version
 # Just install. SORRY!
 # Uninstallation file is separated
-# Version 0.9.2
+# Version 0.9.5
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
