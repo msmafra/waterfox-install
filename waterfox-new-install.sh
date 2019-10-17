@@ -33,15 +33,17 @@ function exit_stage_left() {
 }
 
 function err_msg() {
+    local the_message
     # Prints error messages
-    local the_message="${1}"; shift
+    the_message="${1}"; shift
     # printf "%s [$(date +'%Y-%m-%dT%H:%M:%S%z')]: ${@}" >&2
-    printf "%s [$(date +'%Y-%m-%dT%H:%M:%S%z')]: ${@}"
+    printf "%s [$(date +'%Y-%m-%dT%H:%M:%S%z')]:" "${@}"
 }
 
 function check_sudo() {
     # wfxuser check which user is running the script
-    local wfxuser=$(\id --user --name)
+    local wfxuser
+    wfxuser=$(\id --user --name)
     if [[ "${EUID}" != 0 ]];then
         printf "%s, run me as sudo, pleeeese.\n" "${wfxuser}"
         exit "${?}"
@@ -50,22 +52,32 @@ function check_sudo() {
 
 function wfx_check_existence() {
     # First checks if some needed programs are on the system
-    local places="/usr/bin/ /usr/local/bin/"
-    local is_waterfox=$(
-        \whereis -B ${places:-} -b ${wfxexecpath:-NULL} -f 2>&1 |
-        \whereis -B ${places:-} -b waterfox -f 2>&1 |
+    local places
+    local is_waterfox
+    local is_wget
+    local is_curl
+    local is_notifysend
+
+    places="/usr/bin/ /usr/local/bin/"
+
+    is_waterfox=$(
+        \whereis -B "${places:-}" -b "${wfxexecpath:-NULL}" -f 2>&1 |
+        \whereis -B "${places:-}" -b waterfox -f 2>&1 |
         \awk --sandbox --field-separator=": " '{print $2}'
     )
-    local is_wget=$(
-        \whereis -B ${places:-} -b wget -f 2>&1 |
+
+    is_wget=$(
+        \whereis -B "${places:-}" -b wget -f 2>&1 |
         \awk --sandbox --field-separator=": " '{print $2}'
     )
-    local is_curl=$(
-        \whereis -B ${places:-} -b curl -f 2>&1 |
+
+    is_curl=$(
+        \whereis -B "${places:-}" -b curl -f 2>&1 |
         \awk --sandbox --field-separator=": " '{print $2}'
     )
-    local is_notifysend=$(
-        \whereis -B ${places:-} -b notify-send -f 2>&1 |
+
+    is_notifysend=$(
+        \whereis -B "${places:-}" -b notify-send -f 2>&1 |
         \awk --sandbox --field-separator=": " '{print $2}'
     )
     printf "%s" "${is_waterfox:-0}"
@@ -97,15 +109,21 @@ readonly wfxtmpdir="$(\mktemp --directory --suffix=-waterfox-install)/"
 #}}}
 #{{{ Functions
 function wfx_cache_page() {
+    local url
+    #local tool="${1}"; shift
+    local wait
+    local tries
+    local timeout
+    local maxtime
     # \mkdir --parent --verbose "${wfxtmpdir}"
     # \touch "${wfxtmpdir}${wfxrelcache}"
     #local url="${1}"; shift
-    local url="${wfxrelpage}"
+    url="${wfxrelpage}"
     #local tool="${1}"; shift
-    local wait=3
-    local tries=3
-    local timeout=5
-    local maxtime=10
+    wait=3
+    tries=3
+    timeout=5
+    maxtime=10
     #\wget --spider --no-verbose --show-progress --progress=dot --tries="${tries}" --connect-timeout="${timeout}" --waitretry="${wait}" --output-file="${wfxrelcache}" --continue "${wfxrelpage}"
     #\curl --continue-at - --output "${wfxrelcache}" --show-error --silent --head --request GET "${wfxrelpage}" --retry-connrefused --retry "${tries}" --connect-timeout "${timeout}" --retry-delay "${wait}"
     #\wget --output-document="${wfxtmpdir}${wfxrelcache}" --show-progress --tries="${tries}" --connect-timeout="${timeout}" --waitretry="${wait}" --output-file="${wfxrelcache}" --continue "${wfxrelpage}"
@@ -129,7 +147,8 @@ function wfx_draw_url() {
     # with the Linux files theses changes were made to the regular expression.
     # As Waterfox is available for various OSes it is here filtered to get the .bz2 file(s) ignoring the .dmg and the .exe files
     # To avoid getting both stable and developing version the wfxbranch is used
-    local wfxurl=$(
+    local wfxurl
+    wfxurl=$(
         \cat --squeeze-blank "${wfxtmpdir}${wfxrelcache}" |
         # \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" |
         # \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9:\.\ /?=_-]*" |
@@ -145,9 +164,12 @@ function wfx_draw_url() {
 
 function wfx_draw_appimage() {
 
-    local wfxappimgpage="https://download.opensuse.org/repositories/home:/hawkeye116477:/waterfox/AppImage/"
-    local wfxappimgcache="waterfox-appimage.html"
-    local wfxappimgfile=$(
+    local wfxappimgpage
+    local wfxappimgcache
+    local wfxappimgfile
+    wfxappimgpage="https://download.opensuse.org/repositories/home:/hawkeye116477:/waterfox/AppImage/"
+    wfxappimgcache="waterfox-appimage.html"
+    wfxappimgfile=$(
         \cat --squeeze-blank "${tmpdir}${wfxappimgcache}" |
         \grep --perl-regex --only-matching '(?<=href=")[^"]*' |
         \grep --extended-regexp "^waterfox" |
@@ -160,9 +182,11 @@ function wfx_draw_appimage() {
 
 function wfx_version_remote() {
     # Gets the remote version
-    local wfxurl="$(wfx_draw_url)"
-    local wfxrver=$(
-        printf "${wfxurl}" |
+    local wfxurl
+    local wfxrver
+    wfxurl="$(wfx_draw_url)"
+    wfxrver=$(
+        printf "%s" "${wfxurl}" |
         \awk --sandbox --assign FS="/" '{print $7}' |
         \awk --sandbox --field-separator="-" '{print $2}' |
         \awk --sandbox --field-separator="." '{printf "%s.%s.%s", $1,$2,$3}'
@@ -172,7 +196,8 @@ function wfx_version_remote() {
 
 function wfx_version_local() {
     # Gets the remote version
-    local wfxlver=$(
+    local wfxlver
+    wfxlver=$(
         "${wfxexecpath:-NULL}" --version |
         \awk --sandbox --field-separator='[^0-9]*' '{printf("%s.%s.%s", $2,$3,$4)}' |
         \awk --sandbox --field-separator="." '{printf "%s.%s.%s", $1,$2,$3}'
@@ -182,20 +207,24 @@ function wfx_version_local() {
 
 function wfx_version_check() {
     # Check if the local and remote versions are the same
-    local remote="$(wfx_version_remote)"
-    local local="$(wfx_version_local)"
+    local remote
+    local local
+    remote="$(wfx_version_remote)"
+    local="$(wfx_version_local)"
     if [[ "${remote}" != "${local}" ]];then
-        printf "false"
+        printf "%s" "false"
     else
-        printf "true"
+        printf "%s" "true"
         # If they are the same exits
         exit 3
     fi
 }
 
 function wfx_file() {
-    local wfxurl="$(wfx_draw_url)"
-    local wfxfile="$(
+    local wfxurl
+    local wfxfile
+    wfxurl="$(wfx_draw_url)"
+    wfxfile="$(
         printf "%s" "${wfxurl}" |
         \awk --sandbox --field-separator="/" '{print $7}' |
         \tr --delete "\n"
@@ -204,21 +233,25 @@ function wfx_file() {
 }
 
 function wfx_do_not_kill_the_messenger() {
-    local chknotifysnd=$(\whereis notify-send 2>&1 | \awk --sandbox --field-separator=": " '{print $2}')
-    local wfxsummary="${1}"; shift
-    local wfxbody="${1}"; shift
-    local wfxwhat="${1}"; shift
+    local chknotifysnd
+    local wfxsummary
+    local wfxbody
+    local wfxwhat
+    chknotifysnd=$(\whereis notify-send 2>&1 | \awk --sandbox --field-separator=": " '{print $2}')
+    wfxsummary="${1}"; shift
+    wfxbody="${1}"; shift
+    wfxwhat="${1}"; shift
     # [[ -n "${chknotifysnd}" ]] &&
     # \notify-send --expire-time=10 --urgency=normal "${wfxsummary}" "${wfxwhat} ${wfxbody}" --icon=system-software-install ||
     # printf "%s %s" "${title}" "${message}"
 
-    if [[ -n "$(which zenity)" ]]; then
+    if [[ -n "$(command -v zenity)" ]]; then
         \zenity --error --title="${wfxsummary}" --text="${wfxwhat} ${wfxbody}"
-    elif [[ -n "$(which kdialog)" ]]; then
+    elif [[ -n "$(command -v kdialog)" ]]; then
         \kdialog --error "${wfxwhat} ${wfxbody}" --title "${wfxsummary}"
-    elif [[ -n "$(which xmessage)" ]]; then
+    elif [[ -n "$(command -v xmessage)" ]]; then
         \xmessage -print -center "${wfxsummary}" "${wfxwhat} ${wfxbody}"
-    elif [[ -n "$(which notify-send)" ]]; then
+    elif [[ -n "$(command -v notify-send)" ]]; then
         \notify-send  --urgency=normal "${wfxsummary}" "${wfxwhat} ${wfxbody}" --icon=system-software-install
     else
         printf "%s %s" "${wfxsummary}" "${wfxwhat} ${wfxbody}"
@@ -229,7 +262,7 @@ function wfx_is_it_running() {
     # See if there is a process for waterfoxproject
     if [[ $(\whereis pgrep 2>&1 | \awk --sandbox --field-separator=' ' '{print $2}') ]];then
         if [[ $(\pgrep waterfox) ]];then
-            read -p "Waterfox is running.  It's recommended to close it before proceding. [Enter] to continue..."
+            read -rp "Waterfox is running.  It's recommended to close it before proceding. [Enter] to continue..."
         fi
     else
         exit 1
@@ -237,16 +270,24 @@ function wfx_is_it_running() {
 }
 
 function wfx_get_the_drowned_fox() {
+
+    local url
+    local tool
+    local wait
+    local tries
+    local timeout
+    local maxtime
+
     if [[ $# -lt 2 ]];then
         exit 1
     else
 
-        local url="${1}"; shift
-        local tool="${1}"; shift
-        local wait=3
-        local tries=3
-        local timeout=5
-        local maxtime=10
+        url="${1}"; shift
+        tool="${1}"; shift
+        wait=3
+        tries=3
+        timeout=5
+        maxtime=10
 
         printf "Downloading version %s\n" "${wfxrver}"
         # Choose which one to start the download
@@ -277,8 +318,10 @@ function wfx_get_the_drowned_fox() {
 }
 
 function wfx_extract_it() {
-    local file="${1}"; shift
-    local dest="${1}"; shift
+    local file
+    local dest
+    file="${1}"; shift
+    dest="${1}"; shift
 
     # Extracts the downloaded file to ${dest}
     printf "Extracting %s...\n" "${wfxrver}"
@@ -286,16 +329,20 @@ function wfx_extract_it() {
 }
 
 function wfx_create_desktop_file() {
+    local wfxiconpath
+    local wfxdeviconpath
+    local wfxdesktop
+    local wfxdevdesktop
     # Set as default icon on waterfox.desktop
-    local wfxiconpath="/opt/waterfox/browser/chrome/icons/default/default256.png"
-    local wfxdeviconpath="/opt/waterfox-dev/browser/chrome/icons/default/default256.png"
-    local wfxdesktop="/usr/share/applications/waterfox.desktop"
-    local wfxdevdesktop="/usr/share/applications/waterfox-dev.desktop"
+    wfxiconpath="/opt/waterfox/browser/chrome/icons/default/default256.png"
+    wfxdeviconpath="/opt/waterfox-dev/browser/chrome/icons/default/default256.png"
+    wfxdesktop="/usr/share/applications/waterfox.desktop"
+    wfxdevdesktop="/usr/share/applications/waterfox-dev.desktop"
     # Creates the waterfox.desktop file to be accessed system wide.
     # If there is nothing already there, creates one
     # If there is one already replaces it
     if [[ ! -f "${wfxdesktop}" ]];then
-        printf "\nCreating the waterfox.desktop file...\n"
+        printf "%s" "\nCreating the waterfox.desktop file...\n"
         \tee --ignore-interrupts "${wfxdesktop}" <<'WFOXDESKTOP'
 [Desktop Entry]
 Version=1.2
@@ -933,20 +980,25 @@ WFOXUSRBIN
 
 function wfx_iconic_figures() {
     # Creates symbolic links to the icons based on hawkeye116477 https://github.com/hawkeye116477/install-waterfox-linux
-    local wfxicons="/opt/waterfox/browser/chrome/icons/default/"
-    local iconsize
+    local wfxicons
+    local wfxiconsize
+    local wfxsysicons
+    wfxicons="/opt/waterfox/browser/chrome/icons/default/"
+
     \ln --symbolic --force /opt/waterfox/browser/icons/mozicon128.png /usr/share/pixmaps/waterfox.png
-    for iconsize in $(\ls -1 "${wfxicons}" | \awk --sandbox --field-separator='[^0-9]*' '{print $2}')
+    # for wfxiconsize in $(\ls -1 "${wfxicons}" | \awk --sandbox --field-separator='[^0-9]*' '{print $2}')
+    for wfxiconsize in $(\find "${wfxicons}" -maxdepth 1 -printf "\n%f" | \awk --sandbox --field-separator='[^0-9]*' '{print $2}')
     do
-        local wfxsysicons="/usr/share/icons/hicolor/${iconsize:-0}x${iconsize:-0}/apps/waterfox.png"
-        \ln --symbolic --force ${wfxicons:-0}default${iconsize:-0}.png ${wfxsysicons:-0}
+        wfxsysicons="/usr/share/icons/hicolor/${wfxiconsize:-0}x${wfxiconsize:-0}/apps/waterfox.png"
+        \ln --symbolic --force "${wfxicons:-0}"default"${wfxiconsize:-0}".png "${wfxsysicons:-0}"
     done
     \ln --symbolic --force /opt/waterfox/browser/icons/mozicon128.png /usr/share/icons/hicolor/128x128/apps/waterfox.png
 }
 
 function wfx_keep_it() {
     # Copies the downloaded file from /tmp/ to ~/Downloads/
-    local wfxkeepfolder="~/Downloads/Waterfox/"
+    local wfxkeepfolder
+    wfxkeepfolder="$HOME/Downloads/Waterfox/"
     mkdir --parents --verbose "${wfxkeepfolder}"
     cp --archive --verbose --one-file-system "${tmpdir}" "${wfxkeepfolder}"
 }

@@ -4,3 +4,6 @@ new/*
 *-new.*
 references/*
 *.backup
+*.bak
+*.bk
+*.bkp
