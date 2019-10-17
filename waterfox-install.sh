@@ -41,31 +41,35 @@ readonly wfxwaitretry=15
 
 function wfx_check_available_version() {
 
+    local wfxver
     # Gets the production version of Waterfox from waterfox.net
-    local wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "%s.%s.%s\n", $1,$2,$3}')"
+    wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "%s.%s.%s\n", $1,$2,$3}')"
     printf "%s" "${wfxver}"
 
 }
 
 function wfx_check_local_version() {
-
+    local wfxwhere
+    local message
+    local wfxlver
     # Obtains the local installed version if there is one
-    local wfxwhere=$( [[ -f "${wfxexec}" ]] && printf true || printf "" )
+    wfxwhere=$( [[ -f "${wfxexec}" ]] && printf true || printf "" )
 
     if [[ "${wfxwhere}" ]];then
-        local wfxlver=$( "${wfxbinpath}" --version | \grep -F "Mozilla Waterfox " | \awk '{printf "%s", $3}' )
+        wfxlver=$( "${wfxbinpath}" --version | \grep -F "Mozilla Waterfox " | \awk '{printf "%s", $3}' )
         printf "%s" "${wfxlver}"
     else
-        local message="No installed version found in %s ${wfxdest}\n"
-        printf "${message}"
+        message="No installed version found in %s ${wfxdest}\n"
+        printf "%s" "${message}"
     fi
 
 }
 
 function wfx_get_the_drowned_fox() {
 
+    local wfxfcheck
     # Downloads the .tar.bz2 file. Firstly, checks if file exists remotely. If file is not there or yet available to download (happened on version 56.2.10 release) exits
-    local wfxfcheck=$( \wget --spider --show-progress --quiet --server-response "${wfxurl}" 2>&1 | \head --lines=1 | \awk 'NR==1{print $2}' )
+    wfxfcheck=$( \wget --spider --show-progress --quiet --server-response "${wfxurl}" 2>&1 | \head --lines=1 | \awk 'NR==1{print $2}' )
     if [[ ! "${wfxfcheck}" = "200" ]];then
         printf "\nNo file is available for downloading! Or some other error. Leaving...\n"
         exit 1
@@ -476,7 +480,7 @@ function wfx_create_symbolic_link() {
 function wfx_change_directory() {
 
     # Change to /tmp so the downloaded file will be automatically deleted after restart or shutdown
-    printf "\nEntering ${tmpdir}...\n"
+    printf "\nEntering %s...\n" ${tmpdir}
     cd "${tmpdir}" && \pwd
 
 }
@@ -488,4 +492,4 @@ wfx_get_the_drowned_fox
 wfx_extract_it
 wfx_create_desktop_file
 wfx_create_symbolic_link
-printf "%s\n" "Installation process finished."
+printf "%s\n" "Installation process finished." "Waterfox"
