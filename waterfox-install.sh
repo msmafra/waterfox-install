@@ -16,9 +16,9 @@ set -o pipefail
 ## Variables ##
 # The url of the download page
 readonly wfxpage="https://www.waterfox.net/releases/"
-# Get the URL from the releases page
+# Gets the URL from the download page
 readonly wfxurl=$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | \grep --max-count=1 ".bz2")
-# Get the file name from the URL
+# Gets the file name from the URL
 readonly wfxfile=$(printf "%s" "${wfxurl}" | \awk --field-separator "/" '{print $7}' | \tr --delete "\n")
 # Install destination
 readonly wfxdest="/usr/lib64/"
