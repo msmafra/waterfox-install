@@ -36,6 +36,9 @@ And then run it:
 
     sudo ./waterfox-install.sh
 
+### Installing Waterfox with the instructions of Angela  [(angela-d)](https://gist.github.com/angela-d/5f6760f5512e8b8029aeda3cbb1d26dd)
+
+The waterfox-download.sh file will access the download page, get the URL and check if the file is available for downloading.
 
 
 ### Uninstalling Waterfox
