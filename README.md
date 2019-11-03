@@ -1,3 +1,6 @@
+# -- On 2019-10-23 versioning and naming scheme has changed. The installation script still working (jsut downlaoding the classic version) but will be adapted nevertheless. -- [Waterfox 2019.10 Release](https://www.waterfox.net/blog/waterfox-2019.10-release-download/). Also development version are not available for while
+
+
 # Waterfox Install for Linux
 
 Waterfox download and installation script.
