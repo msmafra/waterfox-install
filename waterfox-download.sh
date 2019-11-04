@@ -16,9 +16,9 @@ set -o nounset
 set -o pipefail
 # set -o xtrace
 function main() {
-    printf "%s\n" "Checking the URL..."
-    wfx_get_url
-    # wfx_check_remote_existance
+    printf "%s\n" "Checking the URLs..."
+    #wfx_get_url
+    wfx_check_remote_existance
 }
 
 function wfx_get_url() {
@@ -45,28 +45,33 @@ function wfx_get_url() {
 function wfx_check_remote_existance() {
     local wfxfcheck
     declare -a wfxurl
-    wfxurl=("$(wfx_get_url)")
+    wfxurl=($(wfx_get_url))
     #
     # Checks if file is available remotely
     for wurl in "${wfxurl[@]}"; do
+
       wfxfcheck=$(
           \wget --spider --show-progress --quiet --server-response "${wurl}" 2>&1 |
           \head --lines=1 |
           \awk 'NR==1{print $2}'
       )
-    if [[ ! "${wfxfcheck}" = "200" ]];then
-        # If the file is not there print an alert but print URL despite that
-        printf "(!!) %s\n" "Could not be sure if the file is available, it seems not. Despite that, here is the URL: "
-        printf "%s\n" "${wurl}"
-        exit 1
-    else
-        # If the file is there print the message and URL
-        printf "%s\n" "The file is there. Here is the URL for the most recent Waterfox: "
-        printf "%s\n" "${wurl}"
-        exit 0
-    fi
+
+      if [[ ! "${wfxfcheck}" = "200" ]];then
+          # If the file is not there print an alert but print URL despite that
+          printf "(!!) %s\n" "Could not be sure if the file is available, it seems not. Despite that, here is the URL: "
+          printf "%s\n" "${wurl}"
+          # exit 1
+      else
+          # If the file is there print the message and URL
+          # wfxwhere=$( [[ -f "${wfxexec}" ]] && printf true || printf "" )
+          printf "%s\n" "The file is there. Here is the URL for the most recent Waterfox: "
+          printf "%s\n" "${wurl}"
+          # exit 0
+      fi
   done
+
   unset wfxfcheck
   unset wfxurl
 }
+# Run it
 main
