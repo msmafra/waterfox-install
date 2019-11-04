@@ -14,10 +14,11 @@ set -o errexit
 set -o errtrace
 set -o nounset
 set -o pipefail
-#set -o xtrace
+# set -o xtrace
 function main() {
     printf "%s\n" "Checking the URL..."
-    wfx_check_remote_existance
+    wfx_get_url
+    # wfx_check_remote_existance
 }
 
 function wfx_get_url() {
@@ -32,33 +33,40 @@ function wfx_get_url() {
         \wget --quiet --output-document=- "${wfxpage}" |
         \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" |
         \sort --unique |
-        \grep --max-count=1 ".bz2"
+        \grep --max-count=2 ".bz2"
     )
-    printf "%s" "${wfxurl}"
+    printf "%s " "${wfxurl}"
+
+    unset wfxpage
+    unset wfxurl
+
 }
 
 function wfx_check_remote_existance() {
     local wfxfcheck
-    local wfxurl
-    wfxurl="$(wfx_get_url)"
+    declare -a wfxurl
+    wfxurl=("$(wfx_get_url)")
     #
     # Checks if file is available remotely
-    wfxfcheck=$(
-        \wget --spider --show-progress --quiet --server-response "${wfxurl}" 2>&1 |
-        \head --lines=1 |
-        \awk 'NR==1{print $2}'
-    )
+    for wurl in "${wfxurl[@]}"; do
+      wfxfcheck=$(
+          \wget --spider --show-progress --quiet --server-response "${wurl}" 2>&1 |
+          \head --lines=1 |
+          \awk 'NR==1{print $2}'
+      )
     if [[ ! "${wfxfcheck}" = "200" ]];then
         # If the file is not there print an alert but print URL despite that
         printf "(!!) %s\n" "Could not be sure if the file is available, it seems not. Despite that, here is the URL: "
-        printf "%s\n" "${wfxurl}"
+        printf "%s\n" "${wurl}"
         exit 1
     else
         # If the file is there print the message and URL
         printf "%s\n" "The file is there. Here is the URL for the most recent Waterfox: "
-        printf "%s\n" "${wfxurl}"
+        printf "%s\n" "${wurl}"
         exit 0
     fi
-
+  done
+  unset wfxfcheck
+  unset wfxurl
 }
 main
