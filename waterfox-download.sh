@@ -5,7 +5,7 @@
 # angelad@disroot.org
 # https://notabug.org/angela
 # https://gist.github.com/angela-d/5f6760f5512e8b8029aeda3cbb1d26dd
-# Version 0.5.1
+# Version 0.5.5
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
@@ -47,9 +47,8 @@ function wfx_check_remote_existance() {
     declare -a wfxurl
     wfxurl=($(wfx_get_url))
     #
-    # Checks if file is available remotely
     for wurl in "${wfxurl[@]}"; do
-
+    # Checks if file is available remotely
       wfxfcheck=$(
           \wget --spider --show-progress --quiet --server-response "${wurl}" 2>&1 |
           \head --lines=1 |
