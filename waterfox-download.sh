@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
 # Waterfox Script to print to screen the URl for the latest release
-# To use with Angela (angela-d) installation instructions
+# To use with Angela (angela-d) "How to Install Waterfox on Linux"
 # angelad@disroot.org
 # https://notabug.org/angela
 # https://gist.github.com/angela-d/5f6760f5512e8b8029aeda3cbb1d26dd
-# Version 0.5.5
+# Version 0.6.1
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
@@ -21,16 +21,14 @@ function exit_stage_left {
 function main() {
     printf "%s\n" "Checking the URLs..."
     wfx_check_remote_existance
-    printf "%s %s\n" "Angela (angela-d)'s How to Install Waterfox on Linux" "https://gist.github.com/angela-d/5f6760f5512e8b8029aeda3cbb1d26dd"
+    printf "\v%s %s\n" "Go to Angela (angela-d)'s How to Install Waterfox on Linux and follow the instrutions. :)" "https://gist.github.com/angela-d/5f6760f5512e8b8029aeda3cbb1d26dd"
 }
-
 function wfx_get_url() {
     ## Variables ##
     local wfxpage
     local wfxurl
     # The official URL of the download page
     wfxpage="https://www.waterfox.net/releases/"
-    #
     # Gets the URL for the download from the download page
     wfxurl=$(
         \wget --quiet --output-document=- "${wfxpage}" |
@@ -39,43 +37,32 @@ function wfx_get_url() {
         \grep --max-count=2 ".bz2"
     )
     printf "%s " "${wfxurl}"
-
     unset wfxpage
     unset wfxurl
-
 }
-
 function wfx_check_remote_existance() {
+    # Obtains the URLs and checks if the files are avaible for download
     local wfxfcheck
     declare -a wfxurl
     wfxurl=($(wfx_get_url))
-    #
-    for wurl in "${!wfxurl[@]}"; do
+    for wurl in "${!wfxurl[@]}";do
     # Checks if file is available remotely
       wfxfcheck=$(
-          # \wget --spider --show-progress --quiet --server-response "${wurl}" 2>&1 |
           \wget --spider --show-progress --quiet --server-response "${wfxurl[wurl]}" 2>&1 |
           \head --lines=1 |
           \awk 'NR==1{print $2}'
       )
       [[ "${wurl}" = 1 ]]&& branch="Current" || branch="Classic"
-
       if [[ ! "${wfxfcheck}" = "200" ]];then
           # If the file is not there print an alert but print URL despite that
-          # printf "(!!) %s\n" "Could not be sure if the file is available, it seems not. Despite that, here is the URL: "
-          printf "(!!) Here is the URL for %s Branch. Could not be sure if the file is available, it seems not. (!!)\n" "${branch}"
+          printf "(!!) Here is the URL for Waterfox %s Branch. Could not be sure if the file is available. It looks like is not yet avaible. (!!)\n" "${branch}"
           printf "%s\n" "${wfxurl[wurl]}"
-          # exit 1
       else
           # If the file is there print the message and URL
-          # wfxwhere=$( [[ -f "${wfxexec}" ]] && printf true || printf "" )
-          # printf "%s\n" "The file is there. Here is the URL for the most recent Waterfox: "
-          printf "Here is the URL for %s Branch most recent Waterfox. The file is there.\n" "${branch}"
+          printf "Here is the URL for Waterfox %s Branch most recent. The file is there.\n" "${branch}"
           printf "%s\n" "${wfxurl[wurl]}"
-          # exit 0
       fi
   done
-
   unset wfxfcheck
   unset wfxurl
 }
