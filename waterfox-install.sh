@@ -3,7 +3,7 @@
 # Waterfox Installation Script for the Production version
 # Just install. SORRY!
 # Uninstallation file is separated
-# Version 0.9.5
+# Version 0.9.6
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
@@ -39,14 +39,29 @@ readonly wfxwait=5
 readonly wfxwaitretry=15
 ## Functions ##
 
-function wfx_check_available_version() {
+# function wfx_check_available_version() {
+#
+#     local wfxver
+#     # Gets the production version of Waterfox from waterfox.net
+#     wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "%s.%s.%s\n", $1,$2,$3}')"
+#     printf "%s" "${wfxver}"
+#
+# }
 
+###########
+function wfx_available_versions() {
+
+    # Gets the available versions
     local wfxver
     # Gets the production version of Waterfox from waterfox.net
-    wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "%s.%s.%s\n", $1,$2,$3}')"
+    wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" |
+    \grep --max-count=1 ".bz2" | \sort --unique | \awk --field-separator "/" '{print $7}' | \awk --field-separator "-" '{printf "%s %s\n", $2, $3}' |
+    \awk '{print substr($0,1,15)}')"
     printf "%s" "${wfxver}"
+    unset wfxver
 
 }
+###########
 
 function wfx_check_local_version() {
     local wfxwhere
@@ -54,13 +69,12 @@ function wfx_check_local_version() {
     local wfxlver
     # Obtains the local installed version if there is one
     wfxwhere=$( [[ -f "${wfxexec}" ]] && printf true || printf "" )
-
     if [[ "${wfxwhere}" ]];then
         wfxlver=$( "${wfxbinpath}" --version | \grep -F "Mozilla Waterfox " | \awk '{printf "%s", $3}' )
         printf "%s" "${wfxlver}"
     else
         message="No installed version found in %s ${wfxdest}\n"
-        printf "%s" "${message}"
+        printf "Waterfox %s is installed." "${message}"
     fi
 
 }
@@ -485,11 +499,11 @@ function wfx_change_directory() {
 
 }
 ## Calls ##
+printf "%s\n" "Waterfox $(wfx_available_versions)"
 wfx_change_directory
 wfx_check_local_version
-wfx_check_available_version
 wfx_get_the_drowned_fox
 wfx_extract_it
 wfx_create_desktop_file
 wfx_create_symbolic_link
-printf "%s\n" "Installation process finished." "Waterfox"
+printf "%s\n" "Installation process finished. Waterfox $(wfx_available_versions) installed"
