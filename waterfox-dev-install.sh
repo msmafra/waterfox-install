@@ -3,7 +3,7 @@
 # Waterfox Installation Script for the Development version.
 # Just install. SORRY!
 # Uninstallation file is separated.
-# Version 0.9.5
+# Version 0.9.6
 # Author: Marcelo dos Santos Mafra
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
@@ -42,8 +42,18 @@ function wfx_check_available_version() {
 
     # Gets the development version of Waterfox from waterfox.net
     local wfxver
-    wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | grep "/aurora" | \sort --unique | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "%s.%s.%s", $1,$2,$3}' | \grep --perl-regex --only-matching '.*(?=\.)')"
-    printf "%s" "${wfxver}"
+    wfxver="$(
+    \wget --quiet --output-document=- "${wfxpage}" |
+    \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" |
+    \grep "/aurora" |
+    \sort --unique |
+    \grep --max-count=1 ".bz2" |
+    \awk --assign FS="/" '{print $7}' |
+    \awk --field-separator "-" '{print $2}' |
+    \awk --field-separator "." '{printf "%s.%s.%s", $1,$2,$3}' |
+    \grep --perl-regex --only-matching '.*(?=\.)'
+    )"
+    printf "\n%s..." "${wfxver}"
 }
 
 function wfx_check_local_version() {
@@ -51,15 +61,22 @@ function wfx_check_local_version() {
     local wfxwhere
     local wfxlver
     local message
-    # Obtains the local installed version if there is one
+    # Checks the local installed version if there is one
     wfxwhere=$( [[ -f "${wfxexec}" ]] && printf true || printf "" )
 
     if [[ "${wfxwhere}" ]];then
-        wfxlver=$( "${wfxbinpath}" --version | \grep -F "Mozilla Waterfox " | \awk '{printf "%s", $3}' )
+
+        wfxlver=$(
+        "${wfxbinpath}" --version |
+        \grep -F "Mozilla Waterfox " |
+        \awk '{printf "%s", $3}'
+         )
         printf "%s" "${wfxlver}"
+
     else
-        message="No installed version found in %s ${wfxdest}\n"
-        printf "%s" "${message}"
+
+        printf "No installed version found in %s\nDirectory empty or does not exist." "${wfxdest}"
+
     fi
 
 }
