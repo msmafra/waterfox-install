@@ -63,7 +63,7 @@ function wfx_check_remote_existance() {
     wfxfcheck=$(
         \wget --spider --show-progress --quiet --server-response "${wfxurl}" 2>&1 |
         \head --lines=1 |
-        \awk 'NR==1{print $2}'
+        \awk --sandbox 'NR==1{print $2}'
     )
 
     if [[ ! "${wfxfcheck}" = "200" ]];then
@@ -79,4 +79,7 @@ function wfx_check_remote_existance() {
     fi
 
 }
-main
+#}}} End Functions
+#{{{ Ignition
+main "${@}"
+#}}} End Ignition
