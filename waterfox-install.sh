@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 #
+# =============================================================================
+#  ------------------------------------------------------------------
 # Waterfox Installation Script for the Production version
-# Just install. SORRY!
-# Uninstallation file is separated
-# Version 0.9.6
+#  ------------------------------------------------------------------
+#
 # Author: Marcelo dos Santos Mafra
+# License: GNU v3
+# Version 0.9.7
+# Created: 2019
+#
+# <https://forum.level1techs.com/u/msmafra>
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
+# <https://github.com/msmafra>
+#
+# Just installation here. SORRY! Uninstallation is a separated file.
+# =============================================================================
 #
 set -o errexit
 set -o errtrace
@@ -32,23 +42,7 @@ readonly wfxbinpath="/usr/lib64/waterfox/waterfox"
 readonly wfxiconpath="/usr/lib64/waterfox/browser/chrome/icons/default/default256.png"
 # Change to /tmp/ to automatically remove file or folders
 readonly tmpdir="/tmp/"
-# Defaults ot wget or curl
-readonly wfxtries=5
-readonly wfxtimeout=10
-readonly wfxwait=5
-readonly wfxwaitretry=15
 ## Functions ##
-
-# function wfx_check_available_version() {
-#
-#     local wfxver
-#     # Gets the production version of Waterfox from waterfox.net
-#     wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | \grep --max-count=1 ".bz2" | \awk --assign FS="/" '{print $7}' | \awk --field-separator "-" '{print $2}' | \awk --field-separator "." '{printf "%s.%s.%s\n", $1,$2,$3}')"
-#     printf "%s" "${wfxver}"
-#
-# }
-
-###########
 function wfx_available_versions() {
 
     # Gets the available versions
@@ -61,20 +55,19 @@ function wfx_available_versions() {
     unset wfxver
 
 }
-###########
 
 function wfx_check_local_version() {
     local wfxwhere
     local message
     local wfxlver
+    message="No installed version found in %s ${wfxdest}\n"
     # Obtains the local installed version if there is one
     wfxwhere=$( [[ -f "${wfxexec}" ]] && printf true || printf "" )
     if [[ "${wfxwhere}" ]];then
         wfxlver=$( "${wfxbinpath}" --version | \grep -F "Mozilla Waterfox " | \awk '{printf "%s", $3}' )
-        printf "%s" "${wfxlver}"
+        printf "The version %s of Waterfox is installed at %s" "${wfxlver}" "${wfxdest}"
     else
-        message="No installed version found in %s ${wfxdest}\n"
-        printf "Waterfox %s is installed." "${message}"
+        printf "Waterfox is not installed on your system."
     fi
 
 }
@@ -90,7 +83,7 @@ function wfx_get_the_drowned_fox() {
     else
         # If the file is there, it starts the download
         printf "\nStarting the download...\n"
-        \wget --show-progress --tries="${wfxtries}" --timeout="${wfxtimeout}" --wait="${wfxwait}" --waitretry="${wfxwaitretry}" --continue "${wfxurl}"
+        \wget --show-progress --continue "${wfxurl}"
     fi
 
 }
@@ -494,11 +487,12 @@ function wfx_create_symbolic_link() {
 function wfx_change_directory() {
 
     # Change to /tmp so the downloaded file will be automatically deleted after restart or shutdown
-    printf "\nEntering %s...\n" ${tmpdir}
+    printf "\nEntering %s...\n" "${tmpdir}"
     cd "${tmpdir}" && \pwd
 
 }
 ## Calls ##
+printf "%s\n" "This will download and install only the classic branch."
 printf "%s\n" "Waterfox $(wfx_available_versions)"
 wfx_change_directory
 wfx_check_local_version
@@ -506,4 +500,4 @@ wfx_get_the_drowned_fox
 wfx_extract_it
 wfx_create_desktop_file
 wfx_create_symbolic_link
-printf "%s\n" "Installation process finished. Waterfox $(wfx_available_versions) installed"
+printf "%s\n" "Installation process finished. Waterfox $(wfx_available_versions) is installed"

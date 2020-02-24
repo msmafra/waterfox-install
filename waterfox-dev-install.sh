@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 #
+# =============================================================================
+#  ------------------------------------------------------------------
 # Waterfox Installation Script for the Development version.
-# Just install. SORRY!
-# Uninstallation file is separated.
-# Version 0.9.6
+#  ------------------------------------------------------------------
+#
 # Author: Marcelo dos Santos Mafra
+# License: GNU v3
+# Version 0.9.7
+# Created: 2019
+#
+# <https://forum.level1techs.com/u/msmafra>
 # <https://stackoverflow.com/users/473433/msmafra>
 # <https://www.reddit.com/user/msmafra/>
+# <https://github.com/msmafra>
+#
+# Just installalation here. SORRY! Uninstallation is a separated file.
+# =============================================================================
 #
 set -o errexit
 set -o errtrace
