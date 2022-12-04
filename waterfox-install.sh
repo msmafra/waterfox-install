@@ -29,7 +29,7 @@ readonly wfxpage="https://www.waterfox.net/releases/"
 # Gets the URL from the download page
 readonly wfxurl=$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" | \sort --unique | \grep --max-count=1 ".bz2")
 # Gets the file name from the URL
-readonly wfxfile=$(printf "%s" "${wfxurl}" | \awk --field-separator "/" '{print $7}' | \tr --delete "\n")
+readonly wfxfile=$(printf "%s" "${wfxurl}" | \awk --field-separator "/" '{print $8}' | \tr --delete "\n")
 # Install destination
 readonly wfxdest="/usr/lib64/"
 # Symbolic link to main executable
