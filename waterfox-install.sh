@@ -49,7 +49,7 @@ function wfx_available_versions() {
     local wfxver
     # Gets the production version of Waterfox from waterfox.net
     wfxver="$(\wget --quiet --output-document=- "${wfxpage}" | \grep --extended-regexp --only-matching "(http|https)://[a-zA-Z0-9./?=_-]*" |
-    \grep --max-count=1 ".bz2" | \sort --unique | \awk --field-separator "/" '{print $7}' | \awk --field-separator "-" '{printf "%s %s\n", $2, $3}' |
+    \grep --max-count=1 ".bz2" | \sort --unique | \awk --field-separator "/" '{print $8}' | \awk --field-separator "-" '{printf "%s %s\n", $2, $3}' |
     \awk '{print substr($0,1,15)}')"
     printf "%s" "${wfxver}"
     unset wfxver
@@ -64,7 +64,7 @@ function wfx_check_local_version() {
     # Obtains the local installed version if there is one
     wfxwhere=$( [[ -f "${wfxexec}" ]] && printf true || printf "" )
     if [[ "${wfxwhere}" ]];then
-        wfxlver=$( "${wfxbinpath}" --version | \grep -F "Mozilla Waterfox " | \awk '{printf "%s", $3}' )
+        wfxlver=$( "${wfxbinpath}" --version | \grep -F "WaterfoxLimited " | \awk '{printf "%s", $3}' )
         printf "The version %s of Waterfox is installed at %s" "${wfxlver}" "${wfxdest}"
     else
         printf "Waterfox is not installed on your system."
@@ -195,7 +195,7 @@ Comment[uk]=Перегляд сторінок Інтернету
 Comment[vi]=Để duyệt các trang web
 Comment[zh_CN]=浏览互联网
 Comment[zh_TW]=瀏覽網際網路
-Exec=waterfox %u
+Exec=env MOZ_ENABLE_WAYLAND=1 waterfox %u
 TryExec=${wfxbinpath}
 Terminal=false
 Type=Application
@@ -290,7 +290,7 @@ Name[vi]=Mở thẻ mới
 Name[xh]=Vula ithebhu entsha
 Name[zh_CN]=打开新标签页
 Name[zh_TW]=開啟新分頁
-Exec=waterfox -new-tab about:newtab
+Exec=env MOZ_ENABLE_WAYLAND=1 waterfox -new-tab about:newtab
 
 [Desktop Action NewWindow]
 Name=Open new window
@@ -377,7 +377,7 @@ Name[vi]=Mở cửa sổ mới
 Name[xh]=Vula iwindow entsha
 Name[zh_CN]=打开新窗口
 Name[zh_TW]=開啟新視窗
-Exec=waterfox -new-window
+Exec=env MOZ_ENABLE_WAYLAND=1 waterfox -new-window
 
 [Desktop Action NewPrivateWindow]
 Name=New private window
@@ -464,7 +464,7 @@ Name[vi]=Cửa sổ riêng tư mới
 Name[xh]=Ifestile yangasese entsha
 Name[zh_CN]=新建隐私浏览窗口
 Name[zh_TW]=新增隱私視窗
-Exec=waterfox -private-window
+Exec=env MOZ_ENABLE_WAYLAND=1 waterfox -private-window
 WFOX
     else
         printf "\n The waterfox.desktop file already exists!\n"
