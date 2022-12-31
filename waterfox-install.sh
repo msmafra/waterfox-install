@@ -38,6 +38,8 @@ readonly wfxexec="/usr/bin/waterfox"
 readonly wfxdesktop="/usr/share/applications/waterfox.desktop"
 # Main executable
 readonly wfxbinpath="/usr/lib64/waterfox/waterfox"
+# Executable with a flag to enable high resolution screens
+readonly wfx_desktop_exec="env MOZ_ENABLE_WAYLAND=1 waterfox"
 # Desktop entry default icon. Available: default16.png  default22.png  default24.png  default256.png  default32.png  default48.png
 readonly wfxiconpath="/usr/lib64/waterfox/browser/chrome/icons/default/default256.png"
 # Change to /tmp/ to automatically remove file or folders
@@ -195,7 +197,7 @@ Comment[uk]=Перегляд сторінок Інтернету
 Comment[vi]=Để duyệt các trang web
 Comment[zh_CN]=浏览互联网
 Comment[zh_TW]=瀏覽網際網路
-Exec=env MOZ_ENABLE_WAYLAND=1 waterfox %u
+Exec=${wfx_desktop_exec}
 TryExec=${wfxbinpath}
 Terminal=false
 Type=Application
@@ -290,7 +292,7 @@ Name[vi]=Mở thẻ mới
 Name[xh]=Vula ithebhu entsha
 Name[zh_CN]=打开新标签页
 Name[zh_TW]=開啟新分頁
-Exec=env MOZ_ENABLE_WAYLAND=1 waterfox -new-tab about:newtab
+Exec=${wfx_desktop_exec} -new-tab about:newtab
 
 [Desktop Action NewWindow]
 Name=Open new window
@@ -377,7 +379,7 @@ Name[vi]=Mở cửa sổ mới
 Name[xh]=Vula iwindow entsha
 Name[zh_CN]=打开新窗口
 Name[zh_TW]=開啟新視窗
-Exec=env MOZ_ENABLE_WAYLAND=1 waterfox -new-window
+Exec=${wfx_desktop_exec} -new-window
 
 [Desktop Action NewPrivateWindow]
 Name=New private window
@@ -464,7 +466,7 @@ Name[vi]=Cửa sổ riêng tư mới
 Name[xh]=Ifestile yangasese entsha
 Name[zh_CN]=新建隐私浏览窗口
 Name[zh_TW]=新增隱私視窗
-Exec=env MOZ_ENABLE_WAYLAND=1 waterfox -private-window
+Exec=${wfx_desktop_exec} -private-window
 WFOX
     else
         printf "\n The waterfox.desktop file already exists!\n"
