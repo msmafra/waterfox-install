@@ -94,15 +94,14 @@ function wfx_extract_it() {
 
     # Extracts the .tar.bz2 file to /tmp/ creating the subfolder named waterfox.
     # Next copies the resulting folder to /usr/lib64/
-    if [[ ! -d "${tmpdir}waterfox/" ]];then
-        printf "\nExtracting: %s" "${wfxfile}"
-        \tar --extract --verbose --file "${wfxfile}" --directory="${tmpdir}"
-    else
+    if [[ -d "${tmpdir}waterfox/" ]];then
         printf "\nDeleting: %s" "${tmpdir}waterfox/"
         \rm --recursive --force "${tmpdir}waterfox/"
-        printf "\nExtracting: %s to %s" "${wfxfile}" "${tmpdir}"
-        \tar --extract --verbose --file "${wfxfile}" --directory="${tmpdir}"
     fi
+    printf "\nExtracting: %s to %s" "${wfxfile}" "${tmpdir}"
+    \mkdir -p "${tmpdir}waterfox"
+    \tar --extract --verbose --file "${wfxfile}" --directory="${tmpdir}waterfox/"
+    
     printf "\nCopying %s to %s" "${wfxfile}" "${wfxdest}"
     \cp --recursive --force --update --verbose "${tmpdir}waterfox/" "${wfxdest}"
 
