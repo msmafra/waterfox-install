@@ -1,5 +1,8 @@
-# -- 2022-12-08 -- It's been a while since I last looked at this repo. I started, years back a new version that would be published on GitLab, but I never finished it. I'll try to revise it and publish it there. #
-# -- On 2019-10-23 versioning and naming scheme changed. The installation script still working (just downloading the classic version) but will be adapted nevertheless. -- [Waterfox 2019.10 Release](https://www.waterfox.net/blog/waterfox-2019.10-release-download/). Also, the development version is not available for a while
+_ - 2023-10-05 Please use https://gitlab.com/msmafra/wfxi. I finally made a newer version. This repo will be archived._
+
+_- 2022-12-08 -- It's been a while since I last looked at this repo. I started, years back a new version that would be published on GitLab, but I never finished it. I'll try to revise it and publish it there._
+
+_- On 2019-10-23 versioning and naming scheme changed. The installation script still working (just downloading the classic version) but will be adapted nevertheless. -- [Waterfox 2019.10 Release](https://www.waterfox.net/blog/waterfox-2019.10-release-download/). Also, the development version is not available for a while_
 
 
 # Waterfox Install for Linux
